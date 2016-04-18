@@ -10,8 +10,15 @@
 (def x-wins ["X" 1 2 3 "X" 5 6 7 "X"])
 (def o-wins [0 1 2 "O" "O" "O" 7 8 9])
 (def o-winning-move ["X" "O" 2 3 "O" "X" 6 7 8])
+(def tie-game ["O" "X" "O" "X" "X" "O" "X" "O" "X"])
 
 (describe "tic tac toe"
+  (describe "core"
+    (context "#switch-player"
+      (it "returns the opposite marker"
+        (should= "O" (switch-player "X"))
+        (should= "X" (switch-player "O")))))
+        
   (context "UI"
     (context "#display-board"
       (it "prints an empty board"
@@ -54,6 +61,16 @@
         (should= true (is-winner o-wins "O")))))
 
   (context "AI"
+    (context "#score"
+      (it "returns 10 if the current player has won the game"
+        (should= 10 (score x-wins "X")))
+
+      (it "returns -10 if the opponent has won the game"
+        (should= -10 (score o-wins "X")))
+
+      (it "returns 0 if there is no winner"
+        (should= 0 (score tie-game "X"))))
+
     (context "#get-computer-move"
       (it "returns the winning move"
         (should= 7 (get-computer-move o-winning-move))))))
