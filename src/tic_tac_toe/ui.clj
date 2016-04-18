@@ -7,6 +7,8 @@
                   "---------\n"
                   " " (nth board 6) " | " (nth board 7) " | " (nth board 8) " ")))
 
+(defn display-welcome-message []
+  (println "Welcome to Tic Tac Toe in Clojure!"))
 
 (defn get-user-input []
   (do (flush) (Integer. (read-line))))
@@ -14,3 +16,6 @@
 (defn get-spot [user-marker]
    (do (print (str user-marker ": Where would you like to play? "))
       (get-user-input)))
+
+(defn display-winner [marker]
+  (println (str marker " wins!!!")))
