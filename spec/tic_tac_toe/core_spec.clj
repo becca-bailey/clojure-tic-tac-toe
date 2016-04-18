@@ -2,12 +2,14 @@
   (:require [speclj.core :refer :all]
             [tic-tac-toe.core :refer :all]
             [tic-tac-toe.ui :refer :all]
-            [tic-tac-toe.board :refer :all]))
+            [tic-tac-toe.board :refer :all]
+            [tic-tac-toe.ai :refer :all]))
 
 (def new-board " 0 | 1 | 2 \n---------\n 3 | 4 | 5 \n---------\n 6 | 7 | 8 ")
 (def initial-board [0 1 2 3 4 5 6 7 8])
 (def x-wins ["X" 1 2 3 "X" 5 6 7 "X"])
 (def o-wins [0 1 2 "O" "O" "O" 7 8 9])
+(def o-winning-move ["X" "O" 2 3 "O" "X" 6 7 8])
 
 (describe "tic tac toe"
   (context "UI"
@@ -46,4 +48,9 @@
     (context "#is-winner"
       (it "returns true if a given player has won the game"
         (should= true (is-winner x-wins "X"))
-        (should= true (is-winner o-wins "O"))))))
+        (should= true (is-winner o-wins "O")))))
+
+  (context "AI"
+    (context "#get-computer-move"
+      (it "returns the winning move"
+        (should= 7 (get-computer-move o-winning-move))))))
