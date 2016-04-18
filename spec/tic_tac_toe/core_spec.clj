@@ -19,6 +19,9 @@
 
     (context "#get-spot"
 
+      (around [it]
+        (with-out-str (it)))
+
       (it "returns user input as an integer"
         (should= 4
           (with-in-str "4"
