@@ -19,4 +19,4 @@
   (let [scores {}
         possible-game (possible-game-state spot current-game-state)]
     (if (game-over possible-game)
-      (score (:board possible-game) "X"))))
+      (score (:board possible-game) (:current-player possible-game)))))
