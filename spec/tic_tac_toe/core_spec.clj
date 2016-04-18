@@ -1,6 +1,6 @@
 (ns tic-tac-toe.core-spec
   (:require [speclj.core :refer :all]
-            [tic-tac-toe.core :refer :all]
+            [tic-tac-toe.game :refer :all]
             [tic-tac-toe.ui :refer :all]
             [tic-tac-toe.board :refer :all]
             [tic-tac-toe.ai :refer :all]))
@@ -41,9 +41,12 @@
 
     (context "#game-over"
       (it "returns true if a player has won or if game is tied"
-        (should= true (game-over tie-game))
-        (should= true (game-over x-wins))
-        (should= false (game-over first-move-x)))))
+        (let [tie-state (game-state tie-game "X" 9)
+              x-win-state (game-state x-wins "X" 3)
+              first-move-state (game-state first-move-x "O" 1)]
+          (should= true (game-over tie-game))
+          (should= true (game-over x-win-state))
+          (should= false (game-over first-move-state))))))
 
 
   (context "UI"
@@ -118,4 +121,9 @@
 
     (context "#get-computer-move"
       (it "returns the winning move"
-        (should= 7 (get-computer-move o-winning-move))))))
+        (should= 7 (get-computer-move o-winning-move))))
+
+    (context "#minimax"
+      (it "returns a score if playing in the given spot will end the game"
+        (let [x-will-win-state (game-state ["X" 1 2 3 "X" 5 6 7 8] "X" 2)]
+          (should= 10 (minimax 8 x-will-win-state)))))))

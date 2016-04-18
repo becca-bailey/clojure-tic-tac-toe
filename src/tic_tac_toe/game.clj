@@ -1,4 +1,4 @@
-(ns tic-tac-toe.core
+(ns tic-tac-toe.game
   (:require [tic-tac-toe.board :refer [won tie]]))
 
 (def initial-board [0 1 2 3 4 5 6 7 8])
@@ -18,5 +18,5 @@
       {:turn-counter (inc (:turn-counter game-state))}
       {:current-player (switch-player (:current-player game-state))}))))
 
-(defn game-over [board]
-  (or (won board) (tie board)))
+(defn game-over [game-state]
+  (or (won (:board game-state)) (tie (:board game-state))))
