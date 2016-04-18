@@ -37,7 +37,14 @@
              (inc (:turn-counter initial-game-state)) (:turn-counter updated-state))
             (should=
               (switch-player
-                (:current-player initial-game-state)) (:current-player updated-state)))))))
+                (:current-player initial-game-state)) (:current-player updated-state))))))
+
+    (context "#game-over"
+      (it "returns true if a player has won or if game is tied"
+        (should= true (game-over tie-game))
+        (should= true (game-over x-wins))
+        (should= false (game-over first-move-x)))))
+
 
   (context "UI"
     (context "#display-board"
@@ -82,7 +89,21 @@
 
     (context "#available-spots"
       (it "returns a collection of spots without X or O"
-        (should= [2 3 6 7 8] (available-spots o-winning-move)))))
+        (should= [2 3 6 7 8] (available-spots o-winning-move))))
+
+    (context "#won"
+      (it "returns true if any player has won the game"
+        (should= true (won x-wins))
+        (should= true (won o-wins))
+        (should= false (won tie-game))))
+
+    (context "#tie"
+      (it "returns true if there is a tie"
+        (should= true (tie tie-game)))
+
+      (it "returns false if there is a winner"
+        (let [game-with-winner ["O" "X" "O" "X" "X" "O" "O" "X" "X"]]
+          (should= false (tie game-with-winner))))))
 
   (context "AI"
     (context "#score"
