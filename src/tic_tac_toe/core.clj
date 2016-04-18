@@ -4,14 +4,17 @@
                            [0 3 6] [1 4 7] [2 5 8]
                            [0 4 8] [2 4 6]])
 
-(defn place-marker [board space marker]
-  (assoc board space marker))
+(defn place-marker [board spot marker]
+  (assoc board spot marker))
+
+(defn marker-is-in-spot [board spot marker]
+  (= marker (nth board spot)))
 
 (defn three-in-a-row [board set-of-three marker]
   (loop [possible-win-spots set-of-three]
     (if (= [] possible-win-spots)
       true
-      (if (= marker (nth board (first possible-win-spots)))
+      (if (marker-is-in-spot board (first possible-win-spots) marker)
         (recur (rest possible-win-spots))
         false))))
 
