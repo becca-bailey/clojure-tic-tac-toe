@@ -13,7 +13,7 @@
 (def tie-game ["O" "X" "O" "X" "X" "O" "X" "O" "X"])
 
 (describe "tic tac toe"
-  (describe "core"
+  (describe "game"
     (context "#switch-player"
       (it "returns the opposite marker"
         (should= "O" (switch-player "X"))
@@ -99,6 +99,11 @@
         (should= true (won x-wins))
         (should= true (won o-wins))
         (should= false (won tie-game))))
+
+    (context "#spot-is-empty"
+      (it "returns true if a spot is empty"
+        (should= true (spot-is-empty first-move-x 0))
+        (should= false (spot-is-empty first-move-x 4))))
 
     (context "#tie"
       (it "returns true if there is a tie"
