@@ -10,6 +10,9 @@
 (defn marker-is-in-spot [board spot marker]
   (= marker (nth board spot)))
 
+(defn spot-is-empty [board spot]
+  (= (nth board spot) spot))
+
 (defn three-in-a-row [board set-of-three marker]
   (loop [possible-win-spots set-of-three]
     (if (= [] possible-win-spots)
