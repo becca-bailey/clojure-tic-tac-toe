@@ -10,6 +10,8 @@
 (def o-winning-move ["X" "O" 2 3 "O" "X" 6 7 8])
 (def initial-state (game-state [0 1 2 3 4 5 6 7 8] "X" 0))
 (def x-will-win-state (game-state ["X" 1 2 3 "X" 5 6 7 8] "X" 2))
+(def o-will-win-state (game-state ["O" "O" 2 3 "X" 5 "X" 7 8] "O" 4))
+(def either-will-win-state (game-state ["O" "O" 2 3 "X" 5 "X" 7 8] "X" 4))
 (def will-tie-state (game-state ["O" 1 "O" "X" "X" "O" "X" "O" "X"] "X" 8))
 
 (defn random-move [game-state]
@@ -21,19 +23,14 @@
   (let [ai-spot (get-computer-move (:board game-state))]
     (possible-game-state ai-spot game-state)))
 
-(defn test-games
-  [initial-game-state {:random true}]
-  (loop [current-game-state initial-game-state
-         states []]
+(defn test-games [initial-game-state random]
+   (loop [current-game-state initial-game-state
+          states []]
     (if (game-over current-game-state)
       states
-      (recur (random-move current-game-state) (conj states current-game-state))))
-  [initial-game-state {:random false}]
-  (loop [current-game-state initial-game-state
-         states []]
-    (if (game-over current-game-state)
-      states
-      (recur (ai-move current-game-state) (conj states current-game-state)))))
+      (if (= random true)
+        (recur (random-move current-game-state) (conj states current-game-state))
+        (recur (ai-move current-game-state) (conj states current-game-state))))))
 
 (context "AI"
   (context "#score"
@@ -60,9 +57,19 @@
                (:board (possible-game-state 0 initial-state)))))
 
   (context "#get-computer-move"
-    (it "returns the winning move"
-      (should= 7 (get-computer-move o-winning-move))))
+    (it "returns the last avaiable spot"
+      (should= (first (available-spots (:board will-tie-state))) (get-computer-move will-tie-state))))
 
   (context "#minimax"
     (it "returns a score if playing in the given spot will end the game"
-        (should-not-be-nil (minimax 8 x-will-win-state)))))
+      (should-not-be-nil (minimax 8 x-will-win-state))
+      (should-not-be-nil (minimax 1 will-tie-state)))
+
+    (it "returns the score of -10 if playing in a given spot will block the opponent from winning"
+      (should= -10 (minimax 8 x-will-win-state)))
+
+    (it "returns the score of 0 if playing in a given spot will result in a tie"
+      (should= 0 (minimax 1 will-tie-state)))
+
+    (it "returns the score of -10 if playing in a given spot will result in a win for opponent"
+      (should= -10 (minimax 2 o-will-win-state)))))
