@@ -9,7 +9,7 @@
       -10
       0)))
 
-(defn get-computer-move [board] 7)
+(defn get-computer-move [board-state] 1)
 
 (defn possible-game-state [spot current-game-state]
   (let [marker (:current-player current-game-state)
@@ -21,5 +21,6 @@
 (defn minimax [spot current-game-state]
   (let [scores {}
         possible-game (possible-game-state spot current-game-state)]
+    (println possible-game)
     (if (game-over possible-game)
       (score (:board possible-game) (:current-player possible-game)))))
