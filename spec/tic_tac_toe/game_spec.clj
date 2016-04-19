@@ -1,12 +1,9 @@
-(ns tic-tac-toe.core-spec
+(ns tic-tac-toe.game-spec
   (:require [speclj.core :refer :all]
-            [tic-tac-toe.game :refer :all]
-            [tic-tac-toe.ui :refer :all]))
+            [tic-tac-toe.game :refer :all]))
 
 (def first-move-x [0 1 2 3 "X" 5 6 7 8])
 (def x-wins ["X" 1 2 3 "X" 5 6 7 "X"])
-(def o-wins [0 1 2 "O" "O" "O" 7 8 9])
-(def o-winning-move ["X" "O" 2 3 "O" "X" 6 7 8])
 (def tie-game ["O" "X" "O" "X" "X" "O" "X" "O" "X"])
 
 (describe "tic tac toe"
