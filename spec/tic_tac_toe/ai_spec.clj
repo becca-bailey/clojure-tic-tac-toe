@@ -1,6 +1,6 @@
 (ns tic-tac-toe.ai-spec
   (:require [speclj.core :refer :all]
-            [tic-tac-toe.game :refer [game-state game-over progress-game-state switch-player]]
+            [tic-tac-toe.game :refer :all]
             [tic-tac-toe.board :refer [place-marker available-spots]]
             [tic-tac-toe.ai :refer :all]))
 
@@ -20,7 +20,7 @@
     (possible-game-state random-spot game-state)))
 
 (defn ai-move [game-state]
-  (let [ai-spot (get-computer-move (:board game-state))]
+  (let [ai-spot (best-computer-move (:board game-state))]
     (possible-game-state ai-spot game-state)))
 
 (defn test-games [initial-game-state random]
@@ -56,9 +56,9 @@
       (should= (place-marker (:board initial-state) 0 "X")
                (:board (possible-game-state 0 initial-state)))))
 
-  (context "#get-computer-move"
-    (it "returns the last avaiable spot"
-      (should= (first (available-spots (:board will-tie-state))) (get-computer-move will-tie-state))))
+  (context "#best-computer-move"
+    (it "returns the available spot when given a board with only one available move"
+      (should= (first (available-spots (:board will-tie-state))) (best-computer-move will-tie-state))))
 
   (context "#minimax"
     (it "returns a score if playing in the given spot will end the game"
