@@ -34,10 +34,21 @@
           ; else
             ;return the spot with the min score
 
+(defn score-for-each-possible-move [current-game-state]
+  (for [possible-move (available-spots (:board current-game-state))]
+    [possible-move (minimax possible-move current-game-state)]))
+
 (defn best-computer-move [current-game-state]
-  (loop [scores         {}
-         possible-moves (available-spots (:board current-game-state))]
-    (if (= possible-moves [])
-      (first (first (filter (fn [[k v]] (= (apply max (vals scores)) v)) scores)))
-      (recur (assoc scores (first possible-moves) (minimax (first possible-moves) current-game-state))
-        (rest possible-moves)))))
+  (let [scores (score-for-each-possible-move current-game-state)]))
+    ; for each key/value pair
+      ; find max score
+      ; return the best mvoe
+
+
+; (defn best-computer-move [current-game-state]
+;   (loop [scores         {}
+;          possible-moves (available-spots (:board current-game-state))]
+;     (if (= possible-moves [])
+;       (first (first (filter (fn [[spot score]] (= (apply max (vals scores)) score)) scores)))
+;       (recur (assoc scores (first possible-moves) (minimax (first possible-moves) current-game-state))
+;         (rest possible-moves)))))
