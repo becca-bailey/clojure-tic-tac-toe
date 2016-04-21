@@ -18,5 +18,5 @@
       {:turn-counter (inc (:turn-counter game-state))}
       {:current-player (switch-player (:current-player game-state))}))))
 
-(defn game-over [game-state]
+(defn game-over? [game-state]
   (or (won (:board game-state)) (tie (:board game-state))))
