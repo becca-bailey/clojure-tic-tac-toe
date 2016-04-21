@@ -17,48 +17,57 @@
 (defn random-move [game-state]
   (let [random-spot
           (rand-nth (available-spots (:board game-state)))]
-    (possible-game-state random-spot game-state)))
+    (recreate-game-state random-spot game-state)))
 
 (defn ai-move [game-state]
   (let [ai-spot (best-computer-move (:board game-state))]
-    (possible-game-state ai-spot game-state)))
+    (recreate-game-state ai-spot game-state)))
 
 (defn test-games [initial-game-state random]
    (loop [current-game-state initial-game-state
           states []]
-    (if (game-over current-game-state)
+    (if (game-over? current-game-state)
       states
       (if (= random true)
         (recur (random-move current-game-state) (conj states current-game-state))
         (recur (ai-move current-game-state) (conj states current-game-state))))))
 
 (context "AI"
-  (context "#score"
-    (it "returns 10 if the current player has won the game"
-      (should= 10 (score x-wins "X")))
+  ; (context "#score"
+  ;   (it "returns 10 if the current player has won the game"
+  ;     (should= 10 (score x-wins "X")))
+  ;
+  ;   (it "returns -10 if the opponent has won the game"
+  ;     (should= -10 (score o-wins "X")))
+  ;
+  ;   (it "returns 0 if there is no winner"
+  ;     (should= 0 (score tie-game "X"))))
 
-    (it "returns -10 if the opponent has won the game"
-      (should= -10 (score o-wins "X")))
-
-    (it "returns 0 if there is no winner"
-      (should= 0 (score tie-game "X"))))
-
-  (context "#possible-game-state"
+  (context "#recreate-game-state"
     (it "returns a game state with a switched player"
       (should= (switch-player (:current-player initial-state))
-               (:current-player (possible-game-state 0 initial-state))))
+               (:current-player (recreate-game-state 0 initial-state))))
 
     (it "returns a state with an increased turn counter"
       (should= (inc (:turn-counter initial-state))
-               (:turn-counter (possible-game-state 0 initial-state))))
+               (:turn-counter (recreate-game-state 0 initial-state))))
 
     (it "returns a state with an updated board"
       (should= (place-marker (:board initial-state) 0 "X")
-               (:board (possible-game-state 0 initial-state)))))
+               (:board (recreate-game-state 0 initial-state))))
 
-  (context "#best-computer-move"
-    (it "returns the available spot when given a board with only one available move"
-      (should= (first (available-spots (:board will-tie-state))) (best-computer-move will-tie-state))))
+  ; (context "#best-computer-move"
+  ;   (it "returns the available spot when given a board with only one available move"
+  ;     (should= (first (available-spots (:board will-tie-state))) (best-computer-move will-tie-state)))
+
+    (it "blocks the opponent's win when there are two moves available"
+      (let [two-moves-state
+            (game-state ["X" "O" "X" "X" "O" "O" 6 "X" 8] "O" 7)                  two-moves-state-2
+            (game-state ["O" 1 "X" "X" "O" "O" "X" 7 "X"] "O" 7)]
+        (should= 6 (best-computer-move two-moves-state)))))
+        ; (should= 7 (best-computer-move two-moves-state-2)))))
+
+
 
   (context "#minimax"
     (it "returns a score if playing in the given spot will end the game"
