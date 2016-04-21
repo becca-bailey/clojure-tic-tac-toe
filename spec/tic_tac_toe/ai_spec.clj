@@ -54,20 +54,20 @@
 
     (it "returns a state with an updated board"
       (should= (place-marker (:board initial-state) 0 "X")
-               (:board (recreate-game-state 0 initial-state))))
+               (:board (recreate-game-state 0 initial-state)))))
 
-  ; (context "#best-computer-move"
-  ;   (it "returns the available spot when given a board with only one available move"
-  ;     (should= (first (available-spots (:board will-tie-state))) (best-computer-move will-tie-state)))
+  (context "#best-computer-move"
+    (it "returns the available spot when given a board with only one available move"
+      (should= (first (available-spots (:board will-tie-state))) (best-computer-move will-tie-state)))
 
-    (it "blocks the opponent's win when there are two moves available"
+    (it "returns the first available move"
       (let [two-moves-state
-            (game-state ["X" "O" "X" "X" "O" "O" 6 "X" 8] "O" 7)                  two-moves-state-2
-            (game-state ["O" 1 "X" "X" "O" "O" "X" 7 "X"] "O" 7)]
-        (should= 6 (best-computer-move two-moves-state)))))
-        ; (should= 7 (best-computer-move two-moves-state-2)))))
+            (game-state ["X" "O" "X" "X" "O" "O" 6 "X" 8] "O" 7)]
+        (should= 6 (best-computer-move two-moves-state))))
 
-
+    (it "chooses the best move when two moves are available"
+      (let [two-moves-state-2 (game-state ["O" 1 "X" "X" "O" "O" "X" 7 "X"] "O" 7)]
+        (should= 7 (best-computer-move two-moves-state-2)))))
 
   (context "#minimax"
     (it "returns a score if playing in the given spot will end the game"

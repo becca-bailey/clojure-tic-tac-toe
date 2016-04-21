@@ -49,5 +49,12 @@
     [possible-move (minimax possible-move game-state)]))
 
 (defn best-computer-move [current-game-state]
-  (let [[[spot score]] (filter find-max-score (score-for-each-possible-move current-game-state))]
-    spot))
+  (loop [scores (score-for-each-possible-move current-game-state)
+         max-score -10
+         spot-with-max-score nil]
+    (if (empty? scores)
+      spot-with-max-score
+      (let [[[current-spot current-score]] scores]
+        (if (> current-score max-score)
+          (recur (rest scores) current-score current-spot)
+          (recur (rest scores) max-score spot-with-max-score))))))
