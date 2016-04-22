@@ -14,8 +14,8 @@
   (Integer. (read-line)))
 
 (defn get-spot [user-marker]
-   (do (println (str user-marker ": Where would you like to play? "))
-      (get-user-input)))
+   (println (str user-marker ": Where would you like to play? "))
+   (get-user-input))
 
 (defn display-winner [marker]
   (println (str marker " wins!!!")))
@@ -25,5 +25,9 @@
 
 (defn confirm-move [move player]
   (if (= player "O")
-    (println (str "Computer plays at spot " move))
+    (println (str "Computer played at spot " move))
     (println (str "You played at spot " move))))
+
+(defn clear-screen []
+  (print (str (char 27) "[2J"))
+  (print (str (char 27) "[;H")))

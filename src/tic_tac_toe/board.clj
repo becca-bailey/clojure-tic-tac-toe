@@ -15,25 +15,27 @@
 
 (defn three-in-a-row [board set-of-three marker]
   (loop [possible-win-spots set-of-three]
-    (if (= [] possible-win-spots)
+    (cond
+      (= [] possible-win-spots)
       true
-      (if (marker-is-in-spot board (first possible-win-spots) marker)
-        (recur (rest possible-win-spots))
-        false))))
+      (marker-is-in-spot board (first possible-win-spots) marker)
+      (recur (rest possible-win-spots))
+      :spot-is-empty false)))
 
-(defn is-winner [board marker]
+(defn is-winner? [board marker]
   (loop [possible-wins winning-combinations]
-    (if (= [] possible-wins)
+    (cond
+      (= [] possible-wins)
       false
-      (if (three-in-a-row board (first possible-wins) marker)
-        true
-        (recur (rest possible-wins))))))
+      (three-in-a-row board (first possible-wins) marker)
+      true
+      :else (recur (rest possible-wins)))))
 
 (defn available-spots [board]
   (filter integer? board))
 
 (defn won? [board]
-  (or (is-winner board "X") (is-winner board "O")))
+  (or (is-winner? board "X") (is-winner? board "O")))
 
 (defn tie? [board]
   (and (every? string? board) (not (won? board))))
