@@ -55,6 +55,6 @@
     (if (empty? scores)
       spot-with-max-score
       (let [[[current-spot current-score]] scores]
-        (if (> current-score max-score)
+        (if (>= current-score max-score)
           (recur (rest scores) current-score current-spot)
           (recur (rest scores) max-score spot-with-max-score))))))
