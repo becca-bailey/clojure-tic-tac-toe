@@ -38,6 +38,6 @@
         (let [tie-state (game-state tie-game "X" 9)
               x-win-state (game-state x-wins "X" 3)
               first-move-state (game-state first-move-x "O" 1)]
-          (should= true (game-over tie-game))
-          (should= true (game-over x-win-state))
-          (should= false (game-over first-move-state)))))))
+          (should= true (game-over? tie-game))
+          (should= true (game-over? x-win-state))
+          (should= false (game-over? first-move-state)))))))
