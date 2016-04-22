@@ -1,53 +1,35 @@
 (ns tic-tac-toe.ai
-  (:require [tic-tac-toe.board :refer :all]
-            [tic-tac-toe.game :refer [game-over? switch-player progress-game-state recreate-game-state]]))
+  (:require [tic-tac-toe.board :as board]
+            [tic-tac-toe.game :as game]))
 
-(defn score [game-state]
-  (let [board (:board game-state) player-marker (:current-player game-state)]
-    (if (is-winner board player-marker)
-      10
-      (if (is-winner board (switch-player player-marker))
-        -10
-        0))))
+(def starting-score 10)
 
-(def find-max-score
-  (fn [[spot score]] (= score (max score))))
-
-(def find-min-score
-  (fn [[spot score]] (= score (min score))))
+(defn score [player current-game-state depth]
+  (let [board (:board current-game-state)]
+    (cond
+      (board/is-winner? board player)
+      (- starting-score depth)
+      (board/is-winner? board (game/switch-player player))
+      (- depth starting-score)
+      :is-tie 0)))
 
 (declare score-for-each-possible-move)
 
-(defn return-max-score [game-state]
-  (let [[[spot score]] (filter find-max-score (score-for-each-possible-move game-state))]
-    score))
+(defn return-min-or-max [coll original-game-state current-game-state]
+  (if (= (game/current-player current-game-state) (game/current-player original-game-state))
+    (apply max (vals coll))
+    (apply min (vals coll))))
 
-(defn return-min-score [game-state]
-  (let [[[spot score]] (filter find-min-score (score-for-each-possible-move game-state))]
-    score))
+(defn minimax [spot original-game-state current-game-state depth]
+  (let [possible-game-state (game/progress-game-state spot current-game-state)]
+    (if (game/game-over? possible-game-state)
+      (score (game/current-player original-game-state) possible-game-state depth)
+      (return-min-or-max (score-for-each-possible-move original-game-state possible-game-state depth) original-game-state possible-game-state))))
 
-(defn return-min-or-max [coll game-state]
-  (if (= (:current-player game-state) "O")
-    (return-max-score game-state)
-    (return-min-score game-state)))
-
-(defn minimax [spot current-game-state]
-  (let [possible-game-state (recreate-game-state spot current-game-state)]
-    (if (game-over? possible-game-state)
-      (score possible-game-state)
-      (return-min-or-max (score-for-each-possible-move possible-game-state) possible-game-state))))
-
-(defn score-for-each-possible-move [game-state]
-  (for [possible-move (available-spots (:board game-state))]
-    [possible-move (minimax possible-move game-state)]))
+(defn score-for-each-possible-move [original-game-state game-state depth]
+  (let [possible-moves (board/available-spots (:board game-state))]
+    (zipmap possible-moves (map #(minimax % original-game-state game-state (inc depth)) possible-moves))))
 
 (defn best-computer-move [current-game-state]
-  (loop [scores (score-for-each-possible-move current-game-state)
-         max-score -10
-         spot-with-max-score nil]
-    (if (empty? scores)
-      spot-with-max-score
-      (let [[[current-spot current-score]] scores]
-        (if (>= current-score max-score)
-          (recur (rest scores) current-score current-spot)
-          (recur (rest scores) max-score spot-with-max-score))))))
+  (let [scores (score-for-each-possible-move current-game-state current-game-state 0)]
+    (key (apply max-key val scores))))

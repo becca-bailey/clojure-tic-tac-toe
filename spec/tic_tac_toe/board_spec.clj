@@ -9,7 +9,7 @@
 (def tie-game ["O" "X" "O" "X" "X" "O" "X" "O" "X"])
 (def first-move-x [0 1 2 3 "X" 5 6 7 8])
 
-(context "Board"
+(describe "Board"
 
   (context "#place-marker"
     (it "places a marker on the board"
@@ -20,10 +20,16 @@
       (should= true (three-in-a-row x-wins [0 4 8] "X"))
       (should= false (three-in-a-row x-wins [0 1 2] "X"))))
 
-  (context "#is-winner"
+  (context "#is-winner?"
     (it "returns true if a given player has won the game"
-      (should= true (is-winner x-wins "X"))
-      (should= true (is-winner o-wins "O"))))
+      (let [x-wins-2 ["O" "X" "O" "X" "X" "O" "O" "X" 8]
+            o-wins-2 ["O" "X" "X" "X" "X" "O" "O" "O" "O"]]
+        (should= true (is-winner? x-wins "X"))
+        (should= false (is-winner? tie-game "X"))
+        (should= false (is-winner? x-wins "O"))
+        (should= false (is-winner? o-wins "X"))
+        (should= true (is-winner? o-wins "O"))
+        (should= true (is-winner? x-wins-2 "X")))))
 
   (context "#available-spots"
     (it "returns a collection of spots without X or O"
