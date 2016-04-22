@@ -1,26 +1,29 @@
 (ns tic-tac-toe.game-loop
-  (:require [tic-tac-toe.board :refer :all])
-  (:require [tic-tac-toe.ui :refer :all])
-  (:require [tic-tac-toe.game :refer :all])
-  (:require [tic-tac-toe.ai :refer :all]))
+  (:require [tic-tac-toe.board :as board])
+  (:require [tic-tac-toe.ui :as ui])
+  (:require [tic-tac-toe.game :as game])
+  (:require [tic-tac-toe.ai :as ai]))
 
 (defn move [game-state]
-  (if (= "X" (:current-player game-state))
-    (get-spot "X")
-    (best-computer-move game-state)))
+  (if (= "X" (game/current-player game-state))
+    (ui/get-spot "X")
+    (ai/best-computer-move game-state)))
+
+(def initial-state (game/game-state [0 1 2 3 4 5 6 7 8] "X" 0))
 
 (defn play []
-  (do (display-welcome-message)
-    (loop [game-state initial-game-state
-           last-move nil]
-      (do
-        (if (not (= 0 (:turn-counter game-state)))
-          (confirm-move last-move (switch-player (:current-player game-state))))
-        (if (game-over? game-state)
-          (if (= :tie (winner game-state))
-            (display-tie)
-            (display-winner (winner game-state)))
-          (do
-            (display-board (:board game-state))
-            (let [player-move (move game-state)]
-              (recur (recreate-game-state player-move game-state) player-move))))))))
+  (ui/display-welcome-message)
+  (loop [game-state initial-state
+          last-move nil]
+    (do
+      (if last-move
+        (ui/confirm-move last-move (game/switch-player game/current-player)))
+      (ui/display-board (:board game-state))
+      (cond
+        (game/winner game-state)
+        (ui/display-winner (game/winner game-state))
+        (board/tie? (:board game-state))
+        (ui/display-tie)
+        :no-winner-or-tie
+          (let [next-move (move game-state)]
+            (recur (game/progress-game-state next-move game-state) next-move))))))
