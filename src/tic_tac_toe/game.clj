@@ -1,5 +1,5 @@
 (ns tic-tac-toe.game
-  (:require [tic-tac-toe.board :refer [won tie]]))
+  (:require [tic-tac-toe.board :refer [won? tie? is-winner place-marker]]))
 
 (def initial-board [0 1 2 3 4 5 6 7 8])
 
@@ -19,4 +19,20 @@
       {:current-player (switch-player (:current-player game-state))}))))
 
 (defn game-over? [game-state]
-  (or (won (:board game-state)) (tie (:board game-state))))
+  (or (won? (:board game-state)) (tie? (:board game-state))))
+
+(defn winner [game-state]
+  (if (game-over? game-state)
+    (cond
+      (is-winner (:board game-state) "X")
+      "X"
+      (is-winner (:board game-state) "O")
+      "O"
+      :else :tie)))
+
+(defn recreate-game-state [spot current-game-state]
+  (let [marker (:current-player current-game-state)
+        board (:board current-game-state)]
+    (let [progressed-board
+           (place-marker board spot marker)]
+      (progress-game-state current-game-state progressed-board))))

@@ -1,6 +1,6 @@
 (ns tic-tac-toe.ai
   (:require [tic-tac-toe.board :refer :all]
-            [tic-tac-toe.game :refer [game-over? switch-player progress-game-state]]))
+            [tic-tac-toe.game :refer [game-over? switch-player progress-game-state recreate-game-state]]))
 
 (defn score [game-state]
   (let [board (:board game-state) player-marker (:current-player game-state)]
@@ -9,13 +9,6 @@
       (if (is-winner board (switch-player player-marker))
         -10
         0))))
-
-(defn recreate-game-state [spot current-game-state]
-  (let [marker (:current-player current-game-state)
-        board (:board current-game-state)]
-    (let [progressed-board
-           (place-marker board spot marker)]
-      (progress-game-state current-game-state progressed-board))))
 
 (def find-max-score
   (fn [[spot score]] (= score (max score))))
