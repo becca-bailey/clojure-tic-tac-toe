@@ -1,7 +1,7 @@
 (ns tic-tac-toe.ai-spec
   (:require [speclj.core :refer :all]
             [tic-tac-toe.game :refer :all]
-            [tic-tac-toe.board :refer [place-marker available-spots]]
+            [tic-tac-toe.board :refer :all]
             [tic-tac-toe.ai :refer :all]))
 
 (def x-wins ["X" 1 2 3 "X" 5 6 7 "X"])
@@ -20,28 +20,25 @@
     (recreate-game-state random-spot game-state)))
 
 (defn ai-move [game-state]
-  (let [ai-spot (best-computer-move (:board game-state))]
+  (let [ai-spot (best-computer-move game-state)]
     (recreate-game-state ai-spot game-state)))
 
-(defn test-games [initial-game-state random]
-   (loop [current-game-state initial-game-state
-          states []]
+(defn test-game [initial-game-state]
+  (loop [current-game-state initial-game-state]
     (if (game-over? current-game-state)
-      states
-      (if (= random true)
-        (recur (random-move current-game-state) (conj states current-game-state))
-        (recur (ai-move current-game-state) (conj states current-game-state))))))
+      (if (tie (:board current-game-state))
+        :tie
+        (if (is-winner (:board current-game-state) "O")
+          :computer-win
+          :computer-lose))
+      (if (= "O" (:current-player current-game-state))
+        (recur (ai-move current-game-state))
+        (recur (random-move current-game-state))))))
+
+(defn random-first-move []
+  (recreate-game-state (rand-nth initial-board) initial-game-state))
 
 (context "AI"
-  ; (context "#score"
-  ;   (it "returns 10 if the current player has won the game"
-  ;     (should= 10 (score x-wins "X")))
-  ;
-  ;   (it "returns -10 if the opponent has won the game"
-  ;     (should= -10 (score o-wins "X")))
-  ;
-  ;   (it "returns 0 if there is no winner"
-  ;     (should= 0 (score tie-game "X"))))
 
   (context "#recreate-game-state"
     (it "returns a game state with a switched player"
@@ -67,7 +64,14 @@
 
     (it "chooses the best move when two moves are available"
       (let [two-moves-state-2 (game-state ["O" 1 "X" "X" "O" "O" "X" 7 "X"] "O" 7)]
-        (should= 7 (best-computer-move two-moves-state-2)))))
+        (should= 7 (best-computer-move two-moves-state-2))))
+
+    (it "always wins or ties against a human player"
+      (let [three-moves-state (game-state ["O" "X" 2 "X" "X" "O" "O" 7 8] "O" 6)]
+         (should-not= :computer-lose (test-game three-moves-state)))
+
+      (dotimes [_ 100]
+        (should-not= :computer-lose (test-game random-first-move)))))
 
   (context "#minimax"
     (it "returns a score if playing in the given spot will end the game"
