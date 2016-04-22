@@ -29,21 +29,21 @@
     (it "returns a collection of spots without X or O"
       (should= [2 3 6 7 8] (available-spots o-winning-move))))
 
-  (context "#won"
+  (context "#won?"
     (it "returns true if any player has won the game"
-      (should= true (won x-wins))
-      (should= true (won o-wins))
-      (should= false (won tie-game))))
+      (should= true (won? x-wins))
+      (should= true (won? o-wins))
+      (should= false (won? tie-game))))
 
   (context "#spot-is-empty"
     (it "returns true if a spot is empty"
       (should= true (spot-is-empty first-move-x 0))
       (should= false (spot-is-empty first-move-x 4))))
 
-  (context "#tie"
+  (context "#tie?"
     (it "returns true if there is a tie"
-      (should= true (tie tie-game)))
+      (should= true (tie? tie-game)))
 
     (it "returns false if there is a winner"
       (let [game-with-winner ["O" "X" "O" "X" "X" "O" "O" "X" "X"]]
-        (should= false (tie game-with-winner))))))
+        (should= false (tie? game-with-winner))))))

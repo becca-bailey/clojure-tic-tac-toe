@@ -32,8 +32,8 @@
 (defn available-spots [board]
   (filter integer? board))
 
-(defn won [board]
+(defn won? [board]
   (or (is-winner board "X") (is-winner board "O")))
 
-(defn tie [board]
-  (and (every? string? board) (not (won board))))
+(defn tie? [board]
+  (and (every? string? board) (not (won? board))))
