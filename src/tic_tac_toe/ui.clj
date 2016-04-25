@@ -18,7 +18,7 @@
         (recur (read-line))))))
 
 (defn get-spot [user-marker available-spots]
-   (println (str user-marker ": Where would you like to play? "))
+   (println (str user-marker ": Where would you like to play? Available spots: " (clojure.string/join " " available-spots)))
    (loop [user-input (get-user-input)]
     (if (some (set available-spots) (vector user-input))
       user-input
