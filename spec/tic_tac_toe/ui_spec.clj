@@ -2,7 +2,7 @@
   (:require [speclj.core :refer :all]
             [tic-tac-toe.ui :refer :all]))
 
-(def new-board "\n 0 | 1 | 2 \n----------\n 3 | 4 | 5 \n----------\n 6 | 7 | 8 \n\n")
+(def new-board "\n 0 | 1 | 2 \n-----------\n 3 | 4 | 5 \n-----------\n 6 | 7 | 8 \n\n")
 (def initial-board [0 1 2 3 4 5 6 7 8])
 
 (describe "UI"
@@ -18,7 +18,17 @@
     (it "returns user input as an integer"
       (should= 4
         (with-in-str "4"
-          (get-spot "X")))))
+          (get-spot "X" [0 1 2 3 4 5 6 7 8]))))
+
+    (it "prints an error message if invalid input is given."
+      (should= "X: Where would you like to play? \nSorry, that's not valid input. Try again!\n"
+        (with-in-str "i\n1"
+          (with-out-str (get-spot "X" [0 1 2 3 4 5 6 7 8])))))
+
+    (it "prints an error message if a spot is not available on the board"
+      (should= "X: Where would you like to play? \nSorry, that spot is already taken. Try again!\n"
+        (with-in-str "0\n1"
+          (with-out-str (get-spot "X" ["O" 1 "X" 3 4 5 6 7 8]))))))
 
   (context "#display-welcome-message"
 
