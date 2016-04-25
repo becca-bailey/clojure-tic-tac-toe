@@ -27,3 +27,7 @@
   (if (= player "O")
     (println (str "Computer played at spot " move))
     (println (str "You played at spot " move))))
+
+(defn clear-screen []
+  (print (str (char 27) "[2J"))
+  (print (str (char 27) "[;H")))
