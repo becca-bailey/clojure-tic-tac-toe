@@ -27,11 +27,13 @@
 (defn test-game [initial-game-state]
   (loop [current-game-state initial-game-state]
     (if (game/game-over? current-game-state)
-      (if (board/tie? (:board current-game-state))
+      (cond
+        (board/tie? (:board current-game-state))
         :tie
-        (if (board/is-winner? (:board current-game-state) "O")
-          :computer-win
-          :computer-lose))
+        (board/is-winner? (:board current-game-state) "O")
+        :computer-win
+        (board/is-winner? (:board current-game-state) "X")
+        :computer-lose)
       (if (= "O" (:current-player current-game-state))
         (recur (ai-move current-game-state))
         (recur (random-move current-game-state))))))
@@ -66,10 +68,12 @@
 
     (it "always wins or ties against a random player"
       (dotimes [_ 100]
-        (should-not= :computer-lose (test-game random-first-move))))
+        (should-not= :computer-lose (test-game random-first-move)))))
 
-    (it "chooses a spot spot when given an empty board"
-      (should= 8 (best-computer-move initial-state))))
+    ; (it "chooses a spot spot when given an empty board"
+    ;   (should= 8 (best-computer-move initial-state))))
+
+    ; ^ this test passes, but takes a long time.
 
   (context "#minimax"
     (context "when depth is 0"

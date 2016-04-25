@@ -6,7 +6,7 @@
 
 (defn move [game-state]
   (if (= "X" (game/current-player game-state))
-    (ui/get-spot "X")
+    (ui/get-spot "X" (board/available-spots (:board game-state)))
     (ai/best-computer-move game-state)))
 
 (def initial-state (game/game-state [0 1 2 3 4 5 6 7 8] "X" 0))
