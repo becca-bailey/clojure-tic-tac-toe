@@ -21,12 +21,12 @@
           (get-spot "X" [0 1 2 3 4 5 6 7 8]))))
 
     (it "prints an error message if invalid input is given."
-      (should= "X: Where would you like to play? \nSorry, that's not valid input. Try again!\n"
+      (should-contain "Sorry, that's not valid input. Try again!"
         (with-in-str "i\n1"
           (with-out-str (get-spot "X" [0 1 2 3 4 5 6 7 8])))))
 
     (it "prints an error message if a spot is not available on the board"
-      (should= "X: Where would you like to play? \nSorry, that spot is already taken. Try again!\n"
+      (should-contain "Sorry, that spot is already taken. Try again!"
         (with-in-str "0\n1"
           (with-out-str (get-spot "X" ["O" 1 "X" 3 4 5 6 7 8]))))))
 
