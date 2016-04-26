@@ -8,4 +8,4 @@
                    [[speclj "3.3.1"]]}}
   :plugins [[speclj "3.3.1"][cider/cider-nrepl "0.12.0"]]
   :test-paths ["spec"]
-  :main tic-tac-toe.game-loop)
+  :main tic-tac-toe.game-loop/play)
