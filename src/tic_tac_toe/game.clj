@@ -34,5 +34,5 @@
 
 (defn progress-game-state [spot current-game-state]
   (let [progressed-board
-         (board/place-marker (:board current-game-state) spot (:marker (current-player current-game-state)))] ;)]
+         (board/place-marker (:board current-game-state) spot (:marker (current-player current-game-state)))]
     (update-board current-game-state progressed-board)))
