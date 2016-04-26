@@ -3,12 +3,7 @@
   (:require [tic-tac-toe.board :as board]
             [tic-tac-toe.ui :as ui]
             [tic-tac-toe.game :as game]
-            [tic-tac-toe.ai :as ai]
-            [clojure.tools.nrepl.server :as nrepl-server]
-            [cider.nrepl :refer (cider-nrepl-handler)]))
-
-(defn -main []
-  (nrepl-server/start-server :port 7888 :handler cider-nrepl-handler))
+            [tic-tac-toe.ai :as ai]))
 
 (defn move [game-state]
   (if (= "X" (game/current-player game-state))
@@ -17,7 +12,7 @@
 
 (def initial-state (game/game-state [0 1 2 3 4 5 6 7 8] "X" 0))
 
-(defn play []
+(defn -main []
   (ui/clear-screen)
   (ui/display-welcome-message)
   (loop [game-state initial-state

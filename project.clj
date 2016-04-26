@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.8.0"]]
   :profiles {:dev {:dependencies
                    [[speclj "3.3.1"]]}}
-  :plugins [[speclj "3.3.1"][cider/cider-nrepl "0.12.0"]]
+  :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
-  :main tic-tac-toe.game-loop/play)
+  :main tic-tac-toe.game-loop)
