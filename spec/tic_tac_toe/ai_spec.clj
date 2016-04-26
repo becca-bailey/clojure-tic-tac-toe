@@ -42,7 +42,6 @@
   (game/progress-game-state (rand-nth game/initial-board) initial-state))
 
 (describe "AI"
-
   (context "#best-computer-move"
     (it "returns the available spot when given a board with only one available move"
       (should= (first (board/available-spots (:board will-tie-state))) (best-computer-move will-tie-state)))
@@ -52,7 +51,6 @@
             two-moves-state (game/game-state ["X" "O" "X" "X" "O" "O" 6 "X" 8] "O" 7)]
         (should= 7 (best-computer-move two-moves-state-2))
         (should= 6 (best-computer-move two-moves-state))))
-
 
     (it "chooses the best move when there are three moves available"
       (let [three-moves-state (game/game-state ["O" "X" 2 "X" "X" "O" "O" 7 8] "O" 6)]

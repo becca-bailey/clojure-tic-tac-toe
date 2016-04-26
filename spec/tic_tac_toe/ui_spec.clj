@@ -11,7 +11,6 @@
       (should= new-board (with-out-str (display-board initial-board)))))
 
   (context "#get-spot"
-
     (around [it]
       (with-out-str (it)))
 
@@ -31,11 +30,9 @@
           (with-out-str (get-spot "X" ["O" 1 "X" 3 4 5 6 7 8]))))))
 
   (context "#display-welcome-message"
-
     (it "prints a welcome message to the console"
       (should-be-a String (with-out-str (display-welcome-message)))))
 
   (context "#display-winner"
-
     (it "displays a message with the winner's marker"
       (should-contain "X" (with-out-str (display-winner "X"))))))

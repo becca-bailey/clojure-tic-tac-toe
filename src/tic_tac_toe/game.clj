@@ -24,8 +24,7 @@
       "X"
       (board/is-winner? (:board game-state) "O")
       "O")))
-
-
+      
 (defn current-player [game-state]
   (if (even? (:turn-counter game-state))
     (:first-player game-state)
