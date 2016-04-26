@@ -16,7 +16,7 @@
 (defn three-in-a-row [board set-of-three marker]
   (loop [possible-win-spots set-of-three]
     (cond
-      (= [] possible-win-spots)
+      (empty? possible-win-spots)
       true
       (marker-is-in-spot board (first possible-win-spots) marker)
       (recur (rest possible-win-spots))
@@ -25,7 +25,7 @@
 (defn is-winner? [board marker]
   (loop [possible-wins winning-combinations]
     (cond
-      (= [] possible-wins)
+      (empty? possible-wins)
       false
       (three-in-a-row board (first possible-wins) marker)
       true

@@ -1,8 +1,14 @@
 (ns tic-tac-toe.game-loop
-  (:require [tic-tac-toe.board :as board])
-  (:require [tic-tac-toe.ui :as ui])
-  (:require [tic-tac-toe.game :as game])
-  (:require [tic-tac-toe.ai :as ai]))
+  (:gen-class)
+  (:require [tic-tac-toe.board :as board]
+            [tic-tac-toe.ui :as ui]
+            [tic-tac-toe.game :as game]
+            [tic-tac-toe.ai :as ai]
+            [clojure.tools.nrepl.server :as nrepl-server]
+            [cider.nrepl :refer (cider-nrepl-handler)]))
+
+(defn -main []
+  (nrepl-server/start-server :port 7888 :handler cider-nrepl-handler))
 
 (defn move [game-state]
   (if (= "X" (game/current-player game-state))
