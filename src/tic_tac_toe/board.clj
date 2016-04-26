@@ -39,3 +39,10 @@
 
 (defn tie? [board]
   (and (every? string? board) (not (won? board))))
+
+(defn winner [board]
+  (cond
+    (is-winner? board "X")
+    "X"
+    (is-winner? board "O")
+    "O"))

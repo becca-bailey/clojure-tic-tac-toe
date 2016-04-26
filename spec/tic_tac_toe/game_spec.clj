@@ -10,7 +10,6 @@
 (def tie-state (game-state tie-game "X" 9))
 (def initial-state (game-state [0 1 2 3 4 5 6 7 8] "X" 0))
 
-
 (describe "Game"
   (context "#switch-player"
     (it "returns the opposite marker"
@@ -39,17 +38,7 @@
       (let [first-move-state (game-state first-move-x "O" 1)]
         (should= true (game-over? tie-game))
         (should= true (game-over? x-win-state))
-        (should= false (game-over? first-move-state)))))
-
-  (context "#winner"
-    (it "returns nil if the game has not been completed"
-      (should-be-nil (winner initial-state)))
-
-    (it "returns the winner's marker"
-      (should= "X" (winner x-win-state)))
-
-    (it "returns nil if the game is a tie"
-      (should-be-nil (winner tie-state)))
+        (should= false (game-over? first-move-state))))
 
     (context "#progress-game-state"
 

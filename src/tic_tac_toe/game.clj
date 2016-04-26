@@ -17,14 +17,6 @@
 (defn game-over? [game-state]
   (or (board/won? (:board game-state)) (board/tie? (:board game-state))))
 
-(defn winner [game-state]
-  (if (game-over? game-state)
-    (cond
-      (board/is-winner? (:board game-state) "X")
-      "X"
-      (board/is-winner? (:board game-state) "O")
-      "O")))
-      
 (defn current-player [game-state]
   (if (even? (:turn-counter game-state))
     (:first-player game-state)

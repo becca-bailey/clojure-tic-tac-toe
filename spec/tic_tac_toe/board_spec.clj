@@ -52,4 +52,12 @@
 
     (it "returns false if there is a winner"
       (let [game-with-winner ["O" "X" "O" "X" "X" "O" "O" "X" "X"]]
-        (should= false (tie? game-with-winner))))))
+        (should= false (tie? game-with-winner)))))
+
+  (context "#winner"
+    (it "returns the winner's marker"
+      (should= "X" (winner x-wins))
+      (should= "O" (winner o-wins)))
+
+    (it "returns nil if the game is a tie"
+      (should-be-nil (winner tie-game)))))
