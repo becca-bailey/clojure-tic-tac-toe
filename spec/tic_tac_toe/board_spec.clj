@@ -2,18 +2,31 @@
   (:require [speclj.core :refer :all]
             [tic-tac-toe.board :as board]))
 
-(def initial-board [0 1 2 3 4 5 6 7 8])
-(def x-wins ["X" 1 2 3 "X" 5 6 7 "X"])
-(def o-wins [0 1 2 "O" "O" "O" 7 8 9])
-(def o-winning-move ["X" "O" 2 3 "O" "X" 6 7 8])
-(def tie-game ["O" "X" "O" "X" "X" "O" "X" "O" "X"])
-(def first-move-x [0 1 2 3 "X" 5 6 7 8])
+(def x-wins (board/make-board {"X" #{0 4 8}}))
+(def o-wins (board/make-board {"O" #{3 4 5}}))
+(def tie-game (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
+(def first-move-x (board/make-board {"X" #{4}}))
 
 (describe "Board"
+  (context "initial-board"
+    (it "generates an empty board"
+      (should= [0 1 2 3 4 5 6 7 8] board/initial-board)))
+
+  (context "#make-board"
+    (it "returns an empty board given no arguments"
+      (should= board/initial-board (board/make-board)))
+
+    (it "returns a board with default markers given a map of spots and players"
+      (should= first-move-x (board/make-board {"X" #{4}}))
+      (should= ["O" 1 2 3 "X" 5 6 7 8] (board/make-board {"X" #{4} "O" #{0}})))
+
+    (it "returns a board with custom markers given a map of spots and players"
+      (should= [0 1 2 3 "A" 5 6 7 8] (board/make-board {"A" #{4}}))
+      (should= ["B" 1 2 3 "A" 5 6 7 8] (board/make-board {"A" #{4} "B" #{0}}))))
 
   (context "#place-marker"
     (it "places a marker on the board"
-      (should= [0 1 2 3 "X" 5 6 7 8] (board/place-marker initial-board 4 "X"))))
+      (should= first-move-x (board/place-marker board/initial-board 4 "X"))))
 
   (context "#three-in-a-row"
     (it "returns true if the given three spaces have the expected marker"
@@ -33,7 +46,7 @@
 
   (context "#available-spots"
     (it "returns a collection of spots without X or O"
-      (should= [2 3 6 7 8] (board/available-spots o-winning-move))))
+      (should= [0 1 2 3 5 6 7 8] (board/available-spots first-move-x))))
 
   (context "#won?"
     (it "returns true if any player has won the game"

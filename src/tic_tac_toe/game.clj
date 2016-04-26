@@ -6,6 +6,8 @@
 (defn game-state [board first-player turn-counter]
   {:board board :first-player first-player :turn-counter turn-counter})
 
+(def initial-state (game-state initial-board "X" 0))
+
 (defn switch-player [player-marker]
   (if (= "X" player-marker) "O" "X"))
 

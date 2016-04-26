@@ -4,16 +4,21 @@
             [tic-tac-toe.game :as game]
             [tic-tac-toe.board :as board]))
 
-(def x-wins ["X" 1 2 3 "X" 5 6 7 "X"])
-(def o-wins [0 1 2 "O" "O" "O" 7 8 9])
-(def tie-game ["O" "X" "O" "X" "X" "O" "X" "O" "X"])
-(def o-winning-move ["X" "O" 2 3 "O" "X" 6 7 8])
-(def initial-state (game/game-state [0 1 2 3 4 5 6 7 8] "X" 0))
-(def x-will-win-state (game/game-state ["X" "O" 2 3 "X" 5 6 7 8] "O" 3))
-(def o-will-win-state (game/game-state ["O" "O" 2 3 "X" 5 "X" 7 8] "O" 4))
-(def either-will-win-state (game/game-state ["O" "O" 2 3 "X" 5 "X" 7 8] "X" 4))
-(def will-tie-state (game/game-state ["O" 1 "O" "X" "X" "O" "X" "O" "X"] "X" 8))
-(def available-winning-move (game/game-state [0 "O" 2 "X" 4 "X" 6 "O" "X"] "O" 5))
+(def x-wins (board/make-board {"X" #{0 4 8}}))
+(def o-wins (board/make-board {"O" #{3 4 5}}))
+(def tie-game (board/make-board {"X" #{1 3 4 6 8 "O" #{2 5 7}}}))
+(def initial-state
+  (game/game-state board/initial-board "X" 0))
+(def x-will-win-state
+  (game/game-state (board/make-board {"X" #{0 4} "O" #{1 3}}) "X" 4))
+(def o-will-win-state
+  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) "O" 4))
+(def either-will-win-state
+  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) "X" 4))
+(def will-tie-state
+  (game/game-state (board/make-board {"X" #{3 4 6 8}"O" #{0 2 5 7}}) "X" 8))
+(def available-winning-move
+  (game/game-state (board/make-board {"X" #{3 5 8} "O" #{1 7}}) "O" 5))
 
 (defn random-move [game-state]
   (let [random-spot
@@ -57,8 +62,7 @@
          (should= 7 (ai/best-computer-move three-moves-state))))
 
     (it "blocks the opponent from winning"
-      (let [x-will-win-state (game/game-state ["0" 1 2 "X" "X" 5 6 "O" "X"] "O" 5)]
-         (should= 5 (ai/best-computer-move x-will-win-state))))
+      (should= 8 (ai/best-computer-move x-will-win-state)))
 
     (it "goes for the winning move when one is available"
       (let [available-winning-move-2 (game/game-state ["O" "O" 2 "X" 4 5 6 7 "X"] "O" 4)]
