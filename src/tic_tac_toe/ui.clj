@@ -22,12 +22,6 @@
 (defn print-error [message]
   (println (str "Sorry, " message ". Try again!")))
 
-(defn is-an-available-spot? [available-spots input]
-  (some (set (map str available-spots)) (vector input)))
-
-(defn print-error [message]
-  (println (str "Sorry, " message ". Try again!")))
-
 (defn get-user-input
   ([condition error-message]
    (loop [user-input (read-line)]
