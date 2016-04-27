@@ -20,6 +20,12 @@
       (should (ui/is-an-available-spot? [0] "0"))
       (should-not (ui/is-an-available-spot? [0 4] "8"))))
 
+  (context "is-an-available-spot?"
+    (it "returns truthy if a number string is in the set of available spots"
+      (should (ui/is-an-available-spot? initial-board "0"))
+      (should (ui/is-an-available-spot? [0] "0"))
+      (should-not (ui/is-an-available-spot? [0 4] "8"))))
+
   (context "#get-spot"
     (around [it]
       (with-out-str (it)))
