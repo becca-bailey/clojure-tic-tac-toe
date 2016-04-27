@@ -1,7 +1,11 @@
 (ns tic-tac-toe.game-spec
   (:require [speclj.core :refer :all]
             [tic-tac-toe.game :as game]
-            [tic-tac-toe.board :as board]))
+            [tic-tac-toe.board :as board]
+            [tic-tac-toe.player :as player]))
+
+(def default-players
+  [(player/human "X") (player/computer "O")])
 
 (def first-move-x (board/make-board {"X" #{4}}))
 (def x-wins (board/make-board {"X" #{0 4 8}}))
@@ -10,18 +14,23 @@
 (describe "Game"
   (context "#switch-player"
     (it "returns the opposite marker"
-      (should= "O" (game/switch-player "X"))
-      (should= "X" (game/switch-player "O"))))
+      (let [[player1 player2] (:players game/initial-state)]
+        (should= player2 (game/switch-player player1 game/initial-state))
+        (should= player1 (game/switch-player player2 game/initial-state)))))
 
   (context "game-state"
     (it "has a board"
       (should= game/initial-board (:board game/initial-state)))
 
     (it "has a first player"
-      (should= (or "X" "O") (:first-player game/initial-state)))
+      (should= (player/human "X") (:first-player game/initial-state)))
 
     (it "has a turn counter"
       (should= 0 (:turn-counter game/initial-state)))
+
+    (context "#set-turn-counter"
+      (it "returns 0 given an empty board"
+        (should= 0 (game/set-turn-counter game/initial-board))))
 
     (context "#update-board"
       (it "creates a copy of the current game state with updated board and turn counter"
@@ -32,8 +41,8 @@
 
     (context "#game-over"
       (it "returns true if a player has won or if game is tied"
-        (let [first-move-state (game/game-state first-move-x "O" 1)
-              x-win-state (game/game-state x-wins "X" 3)]
+        (let [first-move-state (game/game-state first-move-x default-players)
+              x-win-state (game/game-state x-wins default-players)]
           (should= true (game/game-over? tie-game))
           (should= true (game/game-over? x-win-state))
           (should= false (game/game-over? first-move-state)))))
@@ -49,4 +58,4 @@
 
     (context "#current-player"
       (it "returns the current player based on the first player and the game state"
-        (should= "X" (game/current-player game/initial-state))))))
+        (should= (player/human "X") (game/current-player game/initial-state))))))

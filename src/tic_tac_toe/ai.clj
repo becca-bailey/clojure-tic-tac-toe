@@ -7,9 +7,9 @@
 (defn score [player current-game-state depth]
   (let [board (:board current-game-state)]
     (cond
-      (board/is-winner? board player)
+      (board/is-winner? board (:marker player))
       (- starting-score depth)
-      (board/is-winner? board (game/switch-player player))
+      (board/is-winner? board (:marker (game/switch-player player current-game-state)))
       (- depth starting-score)
       :is-tie 0)))
 

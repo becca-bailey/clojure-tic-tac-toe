@@ -2,23 +2,27 @@
   (:require [speclj.core :refer :all]
             [tic-tac-toe.ai :as ai]
             [tic-tac-toe.game :as game]
-            [tic-tac-toe.board :as board]))
+            [tic-tac-toe.board :as board]
+            [tic-tac-toe.player :as player]))
+
+(def default-players
+  [(player/human "X") (player/computer "O")])
 
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def o-wins (board/make-board {"O" #{3 4 5}}))
 (def tie-game (board/make-board {"X" #{1 3 4 6 8 "O" #{2 5 7}}}))
 (def initial-state
-  (game/game-state board/initial-board "X" 0))
+  (game/game-state board/initial-board default-players))
 (def x-will-win-state
-  (game/game-state (board/make-board {"X" #{0 4} "O" #{1 3}}) "X" 4))
+  (game/game-state (board/make-board {"X" #{0 4} "O" #{1 3}}) default-players))
 (def o-will-win-state
-  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) "O" 4))
+  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) default-players))
 (def either-will-win-state
-  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) "X" 4))
+  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) default-players))
 (def will-tie-state
-  (game/game-state (board/make-board {"X" #{3 4 6 8}"O" #{0 2 5 7}}) "X" 8))
+  (game/game-state (board/make-board {"X" #{3 4 6 8}"O" #{0 2 5 7}}) default-players))
 (def available-winning-move
-  (game/game-state (board/make-board {"X" #{3 5 8} "O" #{1 7}}) "O" 5))
+  (game/game-state (board/make-board {"X" #{3 5 8} "O" #{1 7}}) default-players))
 
 (defn random-move [game-state]
   (let [random-spot
@@ -52,20 +56,20 @@
       (should= (first (board/available-spots (:board will-tie-state))) (ai/best-computer-move will-tie-state)))
 
     (it "chooses the best move when two moves are available"
-      (let [two-moves-state-2 (game/game-state ["O" 1 "X" "X" "O" "O" "X" 7 "X"] "O" 7)
-            two-moves-state (game/game-state ["X" "O" "X" "X" "O" "O" 6 "X" 8] "O" 7)]
+      (let [two-moves-state-2 (game/game-state ["O" 1 "X" "X" "O" "O" "X" 7 "X"] default-players)
+            two-moves-state (game/game-state ["X" "O" "X" "X" "O" "O" 6 "X" 8] default-players)]
         (should= 7 (ai/best-computer-move two-moves-state-2))
         (should= 6 (ai/best-computer-move two-moves-state))))
 
     (it "chooses the best move when there are three moves available"
-      (let [three-moves-state (game/game-state ["O" "X" 2 "X" "X" "O" "O" 7 8] "O" 6)]
+      (let [three-moves-state (game/game-state ["O" "X" 2 "X" "X" "O" "O" 7 8] default-players)]
          (should= 7 (ai/best-computer-move three-moves-state))))
 
     (it "blocks the opponent from winning"
       (should= 8 (ai/best-computer-move x-will-win-state)))
 
     (it "goes for the winning move when one is available"
-      (let [available-winning-move-2 (game/game-state ["O" "O" 2 "X" 4 5 6 7 "X"] "O" 4)]
+      (let [available-winning-move-2 (game/game-state ["O" "O" 2 "X" 4 5 6 7 "X"] default-players)]
          (should= 2 (ai/best-computer-move available-winning-move-2))))
 
     (it "always wins or ties against a random player"
