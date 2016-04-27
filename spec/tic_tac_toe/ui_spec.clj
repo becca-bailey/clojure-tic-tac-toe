@@ -7,9 +7,12 @@
 (def initial-board [0 1 2 3 4 5 6 7 8])
 
 (describe "UI"
+  (around [it]
+    (with-out-str (it)))
+
   (context "#display-board"
     (it "prints an empty board"
-      (should= new-board (with-out-str (ui/display-board initial-board)))))
+      (should-contain new-board (with-out-str (ui/display-board initial-board)))))
 
   (context "is-an-available-spot?"
     (it "returns truthy if a number string is in the set of available spots"
@@ -24,17 +27,17 @@
     (it "returns user input as an integer"
       (should= 4
         (with-in-str "4"
-          (ui/get-spot "X" [0 1 2 3 4 5 6 7 8]))))
+          (ui/get-spot [0 1 2 3 4 5 6 7 8]))))
 
     (it "prints an error message if invalid input is given."
       (should-be-a String
         (with-in-str "i\n1"
-          (with-out-str (ui/get-spot "X" [0 1 2 3 4 5 6 7 8])))))
+          (with-out-str (ui/get-spot [0 1 2 3 4 5 6 7 8])))))
 
     (it "prints an error message if a spot is not available on the board"
       (should-contain "Sorry, that's not an available spot. Try again!"
         (with-in-str "0\n1"
-          (with-out-str (ui/get-spot "X" ["O" 1 "X" 3 4 5 6 7 8]))))))
+          (with-out-str (ui/get-spot ["O" 1 "X" 3 4 5 6 7 8]))))))
 
   (context "#get-user-input"
     (it "returns user input if it meets a given condition"
@@ -57,8 +60,12 @@
       (should-be-a String (with-out-str (ui/display-welcome-message)))))
 
   (context "#display-winner"
-    (it "displays a message with the winner's marker"
-      (should-contain "X" (with-out-str (ui/display-winner "X")))))
+    (it "displays a different message based on the player type"
+      (should-not=
+        (with-out-str
+          (ui/display-winner (player/computer "O")))
+        (with-out-str
+          (ui/display-winner (player/human "X"))))))
 
   (context "#get-marker-choice"
     (around [it]
@@ -84,6 +91,14 @@
         (with-out-str
           (with-in-str "123\nX" (ui/get-marker-choice (player/human nil)))))))
 
+  (context "#y-or-n"
+    (it "returns truty if y or n"
+      (should (ui/y-or-n "y"))
+      (should (ui/y-or-n "n")))
+
+    (it "returns falsy if anything else"
+      (should-not (ui/y-or-n "cat"))))
+
   (context "#player-would-like-to-continue"
     (around [it]
       (with-out-str (it)))
@@ -102,7 +117,13 @@
     (it "returns false if input is 'n'"
       (should= false
         (with-in-str "n"
-          (ui/player-would-like-to-continue)))))
+          (ui/player-would-like-to-continue))))
+
+    (it "prints an error if input is anything else"
+      (should-contain "please choose y or n"
+        (with-out-str
+          (with-in-str "cat\nn"
+            (ui/player-would-like-to-continue))))))
 
   (context "#goodbye"
     (it "prints goodbye"
