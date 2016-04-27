@@ -10,20 +10,45 @@
 (defn display-welcome-message []
   (println "Welcome to Tic Tac Toe in Clojure!"))
 
-(defn get-user-input []
+(defn is-a-number? [input]
+  (some #{"0" "1" "2" "3" "4" "5" "6" "7" "8" "9"} (list input)))
+
+(defn get-user-input [condition error-message]
   (loop [user-input (read-line)]
-    (if (some #{"0" "1" "2" "3" "4" "5" "6" "7" "8" "9"} (list user-input))
-      (Integer. user-input)
-      (do (println "Sorry, that's not valid input. Try again!")
+    (if (condition user-input)
+      user-input
+      (do (println (str "Sorry, " error-message ". Try again!"))
         (recur (read-line))))))
+
+(defn get-user-spot []
+  (let [spot (Integer. (get-user-input is-a-number? "that's not valid input"))]))
+
+(defn is-an-available-spot? [available-spots input]
+  (some (set available-spots) (vector input)))
 
 (defn get-spot [user-marker available-spots]
    (println (str user-marker ": Where would you like to play? Available spots: " (clojure.string/join " " available-spots)))
-   (loop [user-input (get-user-input)]
-    (if (some (set available-spots) (vector user-input))
+   (loop [user-input (get-user-spot)]
+    (if (is-an-available-spot? available-spots user-input)
       user-input
       (do (println "Sorry, that spot is already taken. Try again!")
-        (recur (get-user-input))))))
+        (recur (get-user-spot))))))
+
+(defn is-a-single-character? [input]
+  (= (count input) 1))
+
+(defmulti get-marker-choice :player)
+
+; (defmethod get-marker-choice :human
+;   (println "Choose a character to use as your marker.")
+;   (get-user-input is-a-single-character? "your choice must be a single character"))
+;
+; (defmethod get-marker-choice :computer
+;   (println "Choose a character for the computer's marker.")
+;   (get-user-input is-a-single-character? "your choice must be a single character"))
+
+
+
 
 (defn display-winner [marker]
   (println (str marker " wins!!!")))
