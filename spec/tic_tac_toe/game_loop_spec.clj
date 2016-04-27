@@ -12,6 +12,11 @@
 
 (def state-with-computer-player (game/progress-game-state 4 game-loop/initial-state))
 
+(defn current-player-type [game-state]
+  (:player-type (game/current-player game-state)))
+
+(def state-with-computer-player (game/progress-game-state 4 game-loop/initial-state))
+
 (describe "Game loop"
   (context "#move"
     (around [it]
