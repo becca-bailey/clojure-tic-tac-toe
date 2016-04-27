@@ -8,8 +8,9 @@
 
 (defmulti move (fn [game-state] (:player-type (game/current-player game-state))))
 
-(defmethod move :default [game-state]
-  (ui/get-spot (:marker (game/current-player game-state)) (board/available-spots (:board game-state))))
+(defmethod move :human [game-state]
+  (ui/get-spot
+    (:marker (game/current-player game-state)) (board/available-spots game-state)))
 
 (defmethod move :computer [game-state]
   (ai/best-computer-move game-state))

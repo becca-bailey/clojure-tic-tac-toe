@@ -6,16 +6,22 @@
             [tic-tac-toe.ui :as ui]
             [tic-tac-toe.ai :as ai]))
 
-; (def initial-state
-;   (game/game-state board/initial-board "X" 0))
+(defn current-player-type [game-state]
+  (:player-type (game/current-player game-state)))
 
-; (describe "Game loop"
-;   (context "#move"
-;     (around [it]
-;       (with-out-str (it)))
-;
-;     (it "should call #get-spot if it is called on a game state with a current human player"
-;       (should-invoke ui/get-spot (with-in-str "4" (game-loop/move initial-state))))))
+(def state-with-computer-player (game/progress-game-state 4 game-loop/initial-state))
 
-    ; (it "should call #best-computer-move if it is called on a game state with a current computer player"
-    ;   (should-invoke ai/best-computer-move (game-loop/move initial-state)))))
+(describe "Game loop"
+  (context "#move"
+    (around [it]
+      (with-out-str (it)))
+
+    (it "should ask for user input if the current player is a human"
+      (should= :human (current-player-type game-loop/initial-state))
+      (should-invoke ui/get-spot {:with ["X" '(0 1 2 3 4 5 6 7 8)]}
+        (game-loop/move game-loop/initial-state)))
+
+    (it "should call #best-computer-move if it is called on a game state with a current computer player"
+      (should= :computer (current-player-type state-with-computer-player))
+      (should-invoke ai/best-computer-move {:with [state-with-computer-player]}
+        (game-loop/move state-with-computer-player)))))
