@@ -4,7 +4,8 @@
             [tic-tac-toe.game :as game]
             [tic-tac-toe.board :as board]
             [tic-tac-toe.ui :as ui]
-            [tic-tac-toe.ai :as ai]))
+            [tic-tac-toe.ai :as ai]
+            [tic-tac-toe.player :as player]))
 
 (defn current-player-type [game-state]
   (:player-type (game/current-player game-state)))
@@ -25,3 +26,28 @@
       (should= :computer (current-player-type state-with-computer-player))
       (should-invoke ai/best-computer-move {:with [state-with-computer-player]}
         (game-loop/move state-with-computer-player)))))
+
+  ; (context "#game-setup"
+  ;   (around [it]
+  ;     (with-out-str (it)))
+  ;
+  ;   (it "should clear the screen"
+  ;     (should-invoke ui/clear-screen {:with []} (game-loop/game-setup)))
+  ;
+  ;   (it "should display a welcome message"
+  ;     (should-invoke ui/display-welcome-message {:with []} (game-loop/game-setup)))
+  ;
+  ;   (it "returns a game state with custom player markers"
+  ;     (should-invoke game-loop/initial-state-with-player-markers {:with []} (game-loop/game-setup))))
+  ;
+  ; (context "#initial-state-with-player-markers"
+  ;   (around [it]
+  ;     (with-out-str (it)))))
+
+    ; (it "initializes a game state with an empty board"
+    ;   (should= game-loop/initial-board (:board (game-loop/initial-state-with-player-markers))))))
+
+    ; (it "requests the marker for the human player"
+    ;   (with-in-str "$"
+    ;     (should-invoke
+    ;       ui/get-marker-choice {:with (player/human "X")})))))

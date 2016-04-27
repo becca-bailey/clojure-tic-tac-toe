@@ -18,11 +18,26 @@
 (def default-players
   [(player/human "X") (player/computer "O")])
 
+(def initial-board [0 1 2 3 4 5 6 7 8])
+
 (def initial-state (game/game-state [0 1 2 3 4 5 6 7 8] default-players))
 
-(defn -main []
+(defn initial-state-with-player-markers []
+  (let [[player-1 player-2] (:players initial-state)]
+    (merge initial-state
+      {:players [
+                  (merge player-1
+                    {:marker (ui/get-marker-choice player-1)})
+                  (merge player-2)(ui/get-marker-choice player-2)
+                    {:marker ()}]})))
+
+(defn game-setup []
   (ui/clear-screen)
   (ui/display-welcome-message)
+  (initial-state-with-player-markers))
+
+(defn -main []
+  (game-setup)
   (loop [game-state initial-state
           last-move nil]
     (do
