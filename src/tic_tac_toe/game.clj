@@ -9,7 +9,8 @@
 
 (defn game-state [board players]
   (let [[player-1 player-2] players]
-    {:board board :players [player-1 player-2]   :turn-counter (set-turn-counter board)}))
+    {:board board :players [player-1 player-2]
+     :turn-counter (set-turn-counter board)}))
 
 (def initial-state (game-state initial-board [(player/human "X") (player/computer "O")]))
 

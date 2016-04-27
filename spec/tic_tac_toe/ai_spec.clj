@@ -68,14 +68,14 @@
 
     (it "chooses the best move when there are three moves available"
       (let [three-moves-state (game/game-state (board/make-board {"X" #{1 3 4} "O" #{0 5 6}}) default-players)]
-         (should= 7 (ai/best-computer-move three-moves-state))))
+         (should= 8 (ai/best-computer-move three-moves-state))))
 
     (it "blocks the opponent from winning"
       (should= 8 (ai/best-computer-move x-will-win-state)))
 
     (it "goes for the winning move when one is available"
       (let [available-winning-move-2 (game/game-state (board/make-board {"X" #{0 1} "O" #{3 8}}) default-players)]
-         (should= 2 (ai/best-computer-move available-winning-move-2))))
+         (should= 7 (ai/best-computer-move available-winning-move-2))))
 
     (it "always wins or ties against a random player"
       (dotimes [_ 100]
