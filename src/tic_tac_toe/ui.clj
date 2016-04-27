@@ -51,8 +51,10 @@
   (println "Choose a character for the computer's marker.")
   (get-user-input is-a-single-character? "your choice must be a single character"))
 
-(defn display-winner [marker]
-  (println (str marker " wins!!!")))
+(defn display-winner [player]
+  (if (= (:player-type player) :computer)
+    (println "Computer wins!!")
+    (println "You win!!")))
 
 (defn display-tie []
   (println "It's a tie!"))

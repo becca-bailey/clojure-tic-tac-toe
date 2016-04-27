@@ -57,8 +57,12 @@
       (should-be-a String (with-out-str (ui/display-welcome-message)))))
 
   (context "#display-winner"
-    (it "displays a message with the winner's marker"
-      (should-contain "X" (with-out-str (ui/display-winner "X")))))
+    (it "displays a different message based on the player type"
+      (should-not=
+        (with-out-str
+          (ui/display-winner (player/computer "O")))
+        (with-out-str
+          (ui/display-winner (player/human "X"))))))
 
   (context "#get-marker-choice"
     (around [it]
