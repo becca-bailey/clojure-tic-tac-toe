@@ -10,7 +10,7 @@
 
 (defmethod move :human [game-state]
   (ui/get-spot
-    (:marker (game/current-player game-state)) (board/available-spots game-state)))
+    (:marker (game/current-player game-state)) (board/available-spots (:board game-state))))
 
 (defmethod move :computer [game-state]
   (ai/best-computer-move game-state))
