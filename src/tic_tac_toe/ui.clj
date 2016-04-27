@@ -47,6 +47,25 @@
   (println "Choose a character for the computer's marker.")
   (get-user-input is-a-single-character? "your choice must be a single character"))
 
+(defn get-integer-spot []
+  (Integer. (get-user-input is-a-number? "that's not valid input")))
+
+(defn is-an-available-spot? [available-spots input]
+  (some (set available-spots) (vector input)))
+
+(defn is-a-single-character? [input]
+  (= (count input) 1))
+
+(defmulti get-marker-choice :player-type)
+
+(defmethod get-marker-choice :human [player]
+  (println "Choose a character to use as your marker.")
+  (get-user-input is-a-single-character? "your choice must be a single character"))
+
+(defmethod get-marker-choice :computer [player]
+  (println "Choose a character for the computer's marker.")
+  (get-user-input is-a-single-character? "your choice must be a single character"))
+
 (defn display-winner [marker]
   (println (str marker " wins!!!")))
 
