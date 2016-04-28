@@ -17,6 +17,9 @@
 (defn print-error [message]
   (println (str "Sorry, " message ". Try again!")))
 
+(defn is-a-number? [input]
+  (some #{"0" "1" "2" "3" "4" "5" "6" "7" "8" "9"} (list input)))
+
 (defn get-user-input
   ([condition error-message]
    (loop [user-input (read-line)]
