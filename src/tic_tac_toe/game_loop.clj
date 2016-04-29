@@ -36,14 +36,17 @@
   (ui/display-welcome-message)
   (initial-state-with-player-markers))
 
+(defn display-last-move [last-move game-state]
+  (if last-move
+    (ui/confirm-move last-move (game/switch-player (game/current-player game-state) game-state))))
+
 (defn -main []
   (game-setup)
   (loop [game-state initial-state
           last-move nil]
     (do
-      (if last-move
-        (ui/confirm-move last-move (game/switch-player (game/current-player game-state))))
       (ui/display-board (:board game-state))
+      (display-last-move last-move game-state)
       (cond
         (board/winner game-state)
         (ui/display-winner (board/winner game-state))
