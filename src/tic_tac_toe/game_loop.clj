@@ -10,7 +10,7 @@
 
 (defmethod move :human [game-state]
   (ui/get-spot
-    (:marker (game/current-player game-state)) (board/available-spots (:board game-state))))
+    (board/available-spots (:board game-state))))
 
 (defmethod move :computer [game-state]
   (ai/best-computer-move game-state))
@@ -39,8 +39,8 @@
   (if last-move
     (ui/confirm-move last-move (game/switch-player (game/current-player game-state) game-state))))
 
-(defn play []
-  (loop [game-state (initial-state-with-player-markers)
+(defn play [original-game-state]
+  (loop [game-state original-game-state
          last-move nil]
     (do
       (ui/display-board (:board game-state))
@@ -50,19 +50,18 @@
         (do
           (ui/display-winner (board/winner (:board game-state) (:players game-state)))
           (if (ui/player-would-like-to-continue)
-            (play)
+            (play original-game-state)
             (ui/goodbye)))
         (board/tie? (:board game-state) (:players game-state))
         (do
           (ui/display-tie)
           (if (ui/player-would-like-to-continue)
-            (play)
+            (play original-game-state)
             (ui/goodbye)))
         :no-winner-or-tie
           (let [next-move (move game-state)]
-            (ui/clear-screen)
             (recur (game/progress-game-state next-move game-state) next-move))))))
 
 (defn -main []
   (game-setup)
-  (play))
+  (play (initial-state-with-player-markers)))

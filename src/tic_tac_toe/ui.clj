@@ -1,7 +1,12 @@
 (ns tic-tac-toe.ui
   (:require [tic-tac-toe.player :as player]))
 
+(defn clear-screen []
+  (print (str (char 27) "[2J"))
+  (print (str (char 27) "[;H")))
+
 (defn display-board [board]
+  (clear-screen)
   (println (str "\n " (first board) " | " (nth board 1) " | " (nth board 2) " \n"
                   "-----------\n"
                   " " (nth board 3) " | " (nth board 4) " | " (nth board 5) " \n"
@@ -9,7 +14,7 @@
                   " " (nth board 6) " | " (nth board 7) " | " (nth board 8) " \n")))
 
 (defn display-welcome-message []
-  (println "Welcome to Tic Tac Toe in Clojure!"))
+  (println "Welcome to Tic Tac Toe in Clojure!\n"))
 
 (defn is-an-available-spot? [available-spots input]
   (some (set (map str available-spots)) (vector input)))
@@ -34,8 +39,8 @@
       (do (print-error error-message)
         (recur (read-line)))))))
 
-(defn get-spot [user-marker available-spots]
-  (println (str user-marker ": Where would you like to play? Available spots: " (clojure.string/join " " available-spots)))
+(defn get-spot [available-spots]
+  (println (str "Where would you like to play? Available spots: " (clojure.string/join " " available-spots)))
   (Integer. (get-user-input is-an-available-spot? "that's not an available spot" available-spots)))
 
 (defn is-a-single-character? [input]
@@ -61,16 +66,15 @@
 
 (defn confirm-move [move player]
   (if (= (:player-type player) :computer)
-    (println (str "Computer played at spot " move))
-    (println (str "You played at spot " move))))
+    (println (str "Computer played at spot " move "\n"))
+    (println (str "You played at spot " move "\n"))))
+
+(defn y-or-n [input]
+  (some #{"y" "n"} (list input)))
 
 (defn player-would-like-to-continue []
   (println "Do you want to play again? y/n")
-  (= "y" (get-user-input #(= (some #{"y" "n"} (list %))) "please choose 'y' or 'n'")))
-
-(defn clear-screen []
-  (print (str (char 27) "[2J"))
-  (print (str (char 27) "[;H")))
+  (= "y" (get-user-input y-or-n "please choose y or n")))
 
 (defn goodbye []
   (println "Goodbye!"))

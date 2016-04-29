@@ -19,7 +19,7 @@
 
     (it "should ask for user input if the current player is a human"
       (should= :human (current-player-type game-loop/initial-state))
-      (should-invoke ui/get-spot {:with ["X" '(0 1 2 3 4 5 6 7 8)]}
+      (should-invoke ui/get-spot {:with ['(0 1 2 3 4 5 6 7 8)]}
         (game-loop/move game-loop/initial-state)))
 
     (it "should call #best-computer-move if it is called on a game state with a current computer player"
