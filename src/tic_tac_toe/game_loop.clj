@@ -28,26 +28,25 @@
       {:players [
                   (merge player-1
                     {:marker (ui/get-marker-choice player-1)})
-                  (merge player-2)(ui/get-marker-choice player-2)
-                    {:marker ()}]})))
+                  (merge player-2
+                    {:marker (ui/get-marker-choice player-2)})]})))
 
 (defn game-setup []
   (ui/clear-screen)
-  (ui/display-welcome-message)
-  (initial-state-with-player-markers))
+  (ui/display-welcome-message))
 
 (defn -main []
   (game-setup)
-  (loop [game-state initial-state
-          last-move nil]
+  (loop [game-state (initial-state-with-player-markers)
+         last-move nil]
     (do
       (if last-move
-        (ui/confirm-move last-move (game/switch-player (game/current-player game-state))))
+        (ui/confirm-move last-move (game/switch-player (game/current-player game-state) game-state)))
       (ui/display-board (:board game-state))
       (cond
-        (board/winner game-state)
-        (ui/display-winner (board/winner game-state))
-        (board/tie? (:board game-state))
+        (board/winner (:board game-state) (:players game-state))
+        (ui/display-winner (board/winner (:board game-state) (:players game-state)))
+        (board/tie? (:board game-state) (:players game-state))
         (ui/display-tie)
         :no-winner-or-tie
           (let [next-move (move game-state)]

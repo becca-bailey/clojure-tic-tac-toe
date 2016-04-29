@@ -1,6 +1,13 @@
 (ns tic-tac-toe.board-spec
   (:require [speclj.core :refer :all]
-            [tic-tac-toe.board :as board]))
+            [tic-tac-toe.board :as board]
+            [tic-tac-toe.player :as player]))
+
+(def player-1 (player/human "X"))
+(def player-2 (player/computer "O"))
+
+(def default-players
+  [player-1 player-2])
 
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def o-wins (board/make-board {"O" #{3 4 5}}))
@@ -37,12 +44,12 @@
     (it "returns true if a given player has won the game"
       (let [x-wins-2 ["O" "X" "O" "X" "X" "O" "O" "X" 8]
             o-wins-2 ["O" "X" "X" "X" "X" "O" "O" "O" "O"]]
-        (should= true (board/is-winner? x-wins "X"))
-        (should= false (board/is-winner? tie-game "X"))
-        (should= false (board/is-winner? x-wins "O"))
-        (should= false (board/is-winner? o-wins "X"))
-        (should= true (board/is-winner? o-wins "O"))
-        (should= true (board/is-winner? x-wins-2 "X")))))
+        (should= true (board/is-winner? x-wins player-1))
+        (should= false (board/is-winner? tie-game player-1))
+        (should= false (board/is-winner? x-wins player-2))
+        (should= false (board/is-winner? o-wins player-1))
+        (should= true (board/is-winner? o-wins player-2))
+        (should= true (board/is-winner? x-wins-2  player-1)))))
 
   (context "#available-spots"
     (it "returns a collection of spots without X or O"
@@ -50,9 +57,9 @@
 
   (context "#won?"
     (it "returns true if any player has won the game"
-      (should= true (board/won? x-wins))
-      (should= true (board/won? o-wins))
-      (should= false (board/won? tie-game))))
+      (should= true (board/won? x-wins default-players))
+      (should= true (board/won? o-wins  default-players))
+      (should= false (board/won? tie-game default-players))))
 
   (context "#spot-is-empty"
     (it "returns true if a spot is empty"
@@ -61,16 +68,16 @@
 
   (context "#tie?"
     (it "returns true if there is a tie"
-      (should= true (board/tie? tie-game)))
+      (should= true (board/tie? tie-game default-players)))
 
     (it "returns false if there is a winner"
       (let [game-with-winner ["O" "X" "O" "X" "X" "O" "O" "X" "X"]]
-        (should= false (board/tie? game-with-winner)))))
+        (should= false (board/tie? game-with-winner default-players)))))
 
   (context "#winner"
-    (it "returns the winner's marker"
-      (should= "X" (board/winner x-wins))
-      (should= "O" (board/winner o-wins)))
+    (it "returns winning player"
+      (should= player-1 (board/winner x-wins default-players))
+      (should= player-2 (board/winner o-wins default-players)))
 
     (it "returns nil if the game is a tie"
-      (should-be-nil (board/winner tie-game)))))
+      (should-be-nil (board/winner tie-game default-players)))))

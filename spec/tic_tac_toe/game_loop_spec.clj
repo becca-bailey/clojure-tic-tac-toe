@@ -25,29 +25,33 @@
     (it "should call #best-computer-move if it is called on a game state with a current computer player"
       (should= :computer (current-player-type state-with-computer-player))
       (should-invoke ai/best-computer-move {:with [state-with-computer-player]}
-        (game-loop/move state-with-computer-player)))))
+        (game-loop/move state-with-computer-player))))
 
-  ; (context "#game-setup"
-  ;   (around [it]
-  ;     (with-out-str (it)))
-  ;
-  ;   (it "should clear the screen"
-  ;     (should-invoke ui/clear-screen {:with []} (game-loop/game-setup)))
-  ;
-  ;   (it "should display a welcome message"
-  ;     (should-invoke ui/display-welcome-message {:with []} (game-loop/game-setup)))
-  ;
-  ;   (it "returns a game state with custom player markers"
-  ;     (should-invoke game-loop/initial-state-with-player-markers {:with []} (game-loop/game-setup))))
-  ;
-  ; (context "#initial-state-with-player-markers"
-  ;   (around [it]
-  ;     (with-out-str (it)))))
+  (context "#game-setup"
+    (around [it]
+      (with-out-str (it)))
 
-    ; (it "initializes a game state with an empty board"
-    ;   (should= game-loop/initial-board (:board (game-loop/initial-state-with-player-markers))))))
+    (it "should clear the screen"
+      (should-invoke ui/clear-screen {:with []} (game-loop/game-setup)))
 
-    ; (it "requests the marker for the human player"
-    ;   (with-in-str "$"
-    ;     (should-invoke
-    ;       ui/get-marker-choice {:with (player/human "X")})))))
+    (it "should display a welcome message"
+      (should-invoke ui/display-welcome-message {:with []} (game-loop/game-setup))))
+
+  (context "#initial-state-with-player-markers"
+    (around [it]
+      (with-out-str (it)))
+
+    (it "initializes a game state with an empty board"
+      (should= game-loop/initial-board
+        (:board
+          (with-in-str "X\nO"    (game-loop/initial-state-with-player-markers)))))
+
+    (it "sets the marker for the human player"
+       (should= "$"
+         (with-in-str "$\n#"
+           (:marker (first (:players (game-loop/initial-state-with-player-markers)))))))
+
+    (it "sets the marker for the computer"
+      (should= "#"
+        (with-in-str "$\n#"
+          (:marker (second (:players (game-loop/initial-state-with-player-markers)))))))))

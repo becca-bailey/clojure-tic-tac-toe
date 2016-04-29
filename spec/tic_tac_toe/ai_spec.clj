@@ -5,8 +5,11 @@
             [tic-tac-toe.board :as board]
             [tic-tac-toe.player :as player]))
 
+(def player-1 (player/human "X"))
+(def player-2 (player/computer "O"))
+
 (def default-players
-  [(player/human "X") (player/computer "O")])
+  [player-1 player-2])
 
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def o-wins (board/make-board {"O" #{3 4 5}}))
@@ -22,7 +25,7 @@
 (def will-tie-state
   (game/game-state (board/make-board {"X" #{3 4 6 8}"O" #{0 2 5 7}}) default-players))
 (def available-winning-move
-  (game/game-state (board/make-board {"X" #{3 5 8} "O" #{1 7}}) default-players))
+  (game/game-state (board/make-board {"X" #{1 7} "O" #{3 5 8}}) default-players))
 
 (defn random-move [game-state]
   (let [random-spot
@@ -34,18 +37,20 @@
     (game/progress-game-state ai-spot game-state)))
 
 (defn test-game [initial-game-state]
-  (loop [current-game-state initial-game-state]
-    (if (game/game-over? current-game-state)
-      (cond
-        (board/tie? (:board current-game-state))
-        :tie
-        (board/is-winner? (:board current-game-state) "O")
-        :computer-win
-        (board/is-winner? (:board current-game-state) "X")
-        :computer-lose)
-      (if (= "O" (:current-player current-game-state))
-        (recur (ai-move current-game-state))
-        (recur (random-move current-game-state))))))
+  (let [players (:players initial-game-state)]
+    (let [[player-1 player-2] players]
+      (loop [current-game-state initial-game-state]
+        (if (game/game-over? current-game-state players)
+          (cond
+            (board/tie? (:board current-game-state) players)
+            :tie
+            (board/is-winner? (:board current-game-state) player-2)
+            :computer-win
+            (board/is-winner? (:board current-game-state) player-1)
+            :computer-lose)
+          (if (= player-2 (:current-player current-game-state))
+            (recur (ai-move current-game-state))
+            (recur (random-move current-game-state))))))))
 
 (defn random-first-move []
   (game/progress-game-state (rand-nth game/initial-board) initial-state))
@@ -87,11 +92,8 @@
         (should-not-be-nil (ai/minimax 8 x-will-win-state x-will-win-state 0))
         (should-not-be-nil (ai/minimax 1 will-tie-state will-tie-state 0)))
 
-      (it "returns the score of 10 if playing in a given spot will block the opponent from winning"
-        (should= 10 (ai/minimax 8 x-will-win-state x-will-win-state 0)))
+      (it "returns the score of -10 if playing in a given spot will result in an opponent win"
+        (should= -10 (ai/minimax 8 player-2 x-will-win-state 0)))
 
       (it "returns the score of 0 if playing in a given spot will result in a tie"
-        (should= 0 (ai/minimax 1 will-tie-state will-tie-state 0)))
-
-      (it "returns a score of 10 if playing in a given spot will help result in a win"
-        (should= 10 (ai/minimax 4 available-winning-move available-winning-move 0))))))
+        (should= 0 (ai/minimax 1 player-1 will-tie-state 0))))))

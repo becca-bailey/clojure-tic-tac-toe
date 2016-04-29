@@ -43,9 +43,9 @@
       (it "returns true if a player has won or if game is tied"
         (let [first-move-state (game/game-state first-move-x default-players)
               x-win-state (game/game-state x-wins default-players)]
-          (should= true (game/game-over? tie-game))
-          (should= true (game/game-over? x-win-state))
-          (should= false (game/game-over? first-move-state)))))
+          (should= true (game/game-over? tie-game default-players))
+          (should= true (game/game-over? x-win-state default-players))
+          (should= false (game/game-over? first-move-state default-players)))))
 
     (context "#progress-game-state"
       (it "returns a state with an increased turn counter"
