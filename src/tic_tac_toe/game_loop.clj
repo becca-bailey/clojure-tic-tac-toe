@@ -33,8 +33,7 @@
 
 (defn game-setup []
   (ui/clear-screen)
-  (ui/display-welcome-message)
-  (initial-state-with-player-markers))
+  (ui/display-welcome-message))
 
 (defn display-last-move [last-move game-state]
   (if last-move
@@ -47,9 +46,9 @@
       (ui/display-board (:board game-state))
       (display-last-move last-move game-state)
       (cond
-        (board/winner game-state)
-        (ui/display-winner (board/winner game-state))
-        (board/tie? (:board game-state))
+        (board/winner (:board game-state) (:players game-state))
+        (ui/display-winner (board/winner (:board game-state) (:players game-state)))
+        (board/tie? (:board game-state) (:players game-state))
         (ui/display-tie)
         :no-winner-or-tie
           (let [next-move (move game-state)]

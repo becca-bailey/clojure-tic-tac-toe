@@ -47,7 +47,8 @@
       (should-invoke ui/confirm-move {:with [4 (player/human "X")]} (game-loop/display-last-move 4 state-with-computer-player)))
 
     (it "returns nil if there is no last move (ex. for an initial board state)"
-      (should-be-nil (game-loop/display-last-move nil game-loop/initial-state))))
+      (should-be-nil (game-loop/display-last-move nil game-loop/initial-state))
+      (should-invoke ui/clear-screen {:with []} (game-loop/game-setup))))
 
   (context "#initial-state-with-player-markers"
     (around [it]

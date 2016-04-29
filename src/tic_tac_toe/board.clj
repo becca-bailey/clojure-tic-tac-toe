@@ -19,7 +19,7 @@
   ([players-and-spots]
    (let [players (keys players-and-spots) spots (vals players-and-spots)]
     (into [] (map #(replace-with-player-marker players spots %) initial-board)))))
-  
+
 (def winning-combinations [[0 1 2] [3 4 5] [6 7 8]
                            [0 3 6] [1 4 7] [2 5 8]
                            [0 4 8] [2 4 6]])
@@ -39,27 +39,29 @@
       (recur (rest possible-win-spots))
       :spot-is-empty false)))
 
-(defn is-winner? [board marker]
+(defn is-winner? [board player]
   (loop [possible-wins winning-combinations]
     (cond
       (empty? possible-wins)
       false
-      (three-in-a-row board (first possible-wins) marker)
+      (three-in-a-row board (first possible-wins) (:marker player))
       true
       :else (recur (rest possible-wins)))))
 
 (defn available-spots [board]
   (filter integer? board))
 
-(defn won? [board]
-  (or (is-winner? board "X") (is-winner? board "O")))
+(defn won? [board players]
+  (let [[player-1 player-2] players]
+    (or (is-winner? board player-1) (is-winner? board player-2))))
 
-(defn tie? [board]
-  (and (every? string? board) (not (won? board))))
+(defn tie? [board players]
+  (and (every? string? board) (not (won? board players))))
 
-(defn winner [board]
-  (cond
-    (is-winner? board "X")
-    "X"
-    (is-winner? board "O")
-    "O"))
+(defn winner [board players]
+  (let [[player-1 player-2] players]
+    (cond
+      (is-winner? board player-1)
+      player-1
+      (is-winner? board player-2)
+      player-2)))
