@@ -28,8 +28,8 @@
       {:players [
                   (merge player-1
                     {:marker (ui/get-marker-choice player-1)})
-                  (merge player-2)(ui/get-marker-choice player-2)
-                    {:marker ()}]})))
+                  (merge player-2
+                    {:marker (ui/get-marker-choice player-2)})]})))
 
 (defn game-setup []
   (ui/clear-screen)
