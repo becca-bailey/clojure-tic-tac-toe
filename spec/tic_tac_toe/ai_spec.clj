@@ -48,7 +48,7 @@
             :computer-win
             (board/is-winner? (:board current-game-state) player-1)
             :computer-lose)
-          (if (= player-2 (:current-player current-game-state))
+          (if (= player-2 (game/current-player current-game-state))
             (recur (ai-move current-game-state))
             (recur (random-move current-game-state))))))))
 

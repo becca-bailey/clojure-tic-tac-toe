@@ -9,7 +9,7 @@
 
 (defn game-state [board players]
   (let [[player-1 player-2] players]
-    {:board board :players [player-1 player-2] :first-player player-1 :turn-counter (set-turn-counter board)}))
+    {:board board :players [player-1 player-2]   :turn-counter (set-turn-counter board)}))
 
 (def initial-state (game-state initial-board [(player/human "X") (player/computer "O")]))
 
@@ -20,9 +20,10 @@
       player-1)))
 
 (defn current-player [game-state]
-  (if (even? (:turn-counter game-state))
-    (:first-player game-state)
-    (switch-player (:first-player game-state) game-state)))
+  (let [[player-1 player-2] (:players game-state)]
+    (if (even? (:turn-counter game-state))
+      player-1
+      player-2)))
 
 (defn update-board [game-state updated-board]
     (merge game-state
@@ -31,11 +32,6 @@
 
 (defn game-over? [game-state players]
   (or (board/won? (:board game-state) players) (board/tie? (:board game-state) players)))
-
-(defn current-player [game-state]
-  (if (even? (:turn-counter game-state))
-    (:first-player game-state)
-    (switch-player (:first-player game-state) game-state)))
 
 (defn progress-game-state [spot current-game-state]
   (let [progressed-board

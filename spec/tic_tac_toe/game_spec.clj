@@ -22,9 +22,6 @@
     (it "has a board"
       (should= game/initial-board (:board game/initial-state)))
 
-    (it "has a first player"
-      (should= (player/human "X") (:first-player game/initial-state)))
-
     (it "has a turn counter"
       (should= 0 (:turn-counter game/initial-state)))
 
