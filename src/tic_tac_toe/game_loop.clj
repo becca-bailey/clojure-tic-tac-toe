@@ -40,10 +40,9 @@
   (if last-move
     (ui/confirm-move last-move (game/switch-player (game/current-player game-state) game-state))))
 
-(defn -main []
-  (game-setup)
-  (loop [game-state initial-state
-          last-move nil]
+(defn play []
+  (loop [game-state (initial-state-with-player-markers)
+         last-move nil]
     (do
       (ui/display-board (:board game-state))
       (display-last-move last-move game-state)
@@ -56,3 +55,7 @@
           (let [next-move (move game-state)]
             (ui/clear-screen)
             (recur (game/progress-game-state next-move game-state) next-move))))))
+
+(defn -main []
+  (game-setup)
+  (play))

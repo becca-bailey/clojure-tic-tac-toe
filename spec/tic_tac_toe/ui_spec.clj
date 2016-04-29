@@ -82,4 +82,30 @@
           (with-in-str "\nX" (ui/get-marker-choice (player/human nil)))))
       (should-contain "your choice must be a single character"
         (with-out-str
-          (with-in-str "123\nX" (ui/get-marker-choice (player/human nil))))))))
+          (with-in-str "123\nX" (ui/get-marker-choice (player/human nil)))))))
+
+  (context "#player-would-like-to-continue"
+    (around [it]
+      (with-out-str (it)))
+
+    (it "outputs to the console"
+      (should-be-a String
+        (with-out-str
+          (with-in-str "n"
+            (ui/player-would-like-to-continue)))))
+
+    (it "returns true if input is 'y'"
+      (should= true
+        (with-in-str "y"
+          (ui/player-would-like-to-continue))))
+
+    (it "returns false if input is 'n'"
+      (should= false
+        (with-in-str "n"
+          (ui/player-would-like-to-continue)))))
+
+  (context "#goodbye"
+    (it "prints goodbye"
+      (should= "Goodbye!\n"
+        (with-out-str
+          (ui/goodbye))))))
