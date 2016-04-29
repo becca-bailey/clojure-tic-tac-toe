@@ -7,7 +7,7 @@
 (defn score [player current-game-state depth]
   (let [board (:board current-game-state)]
     (cond
-      (board/is-winner? board (:marker player))
+      (board/is-winner? board player)
       (- starting-score depth)
       (board/is-winner? board (game/switch-player player current-game-state))
       (- depth starting-score)
