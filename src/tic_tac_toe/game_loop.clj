@@ -39,8 +39,7 @@
   (if last-move
     (ui/confirm-move last-move (game/switch-player (game/current-player game-state) game-state))))
 
-(defn -main []
-  (game-setup)
+(defn play []
   (loop [game-state (initial-state-with-player-markers)
          last-move nil]
     (do
@@ -48,10 +47,22 @@
       (display-last-move last-move game-state)
       (cond
         (board/winner (:board game-state) (:players game-state))
-        (ui/display-winner (board/winner (:board game-state) (:players game-state)))
+        (do
+          (ui/display-winner (board/winner (:board game-state) (:players game-state)))
+          (if (ui/player-would-like-to-continue)
+            (play)
+            (ui/goodbye)))
         (board/tie? (:board game-state) (:players game-state))
-        (ui/display-tie)
+        (do
+          (ui/display-tie)
+          (if (ui/player-would-like-to-continue)
+            (play)
+            (ui/goodbye)))
         :no-winner-or-tie
           (let [next-move (move game-state)]
             (ui/clear-screen)
             (recur (game/progress-game-state next-move game-state) next-move))))))
+
+(defn -main []
+  (game-setup)
+  (play))

@@ -62,6 +62,13 @@
     (println (str "Computer played at spot " move))
     (println (str "You played at spot " move))))
 
+(defn player-would-like-to-continue []
+  (println "Do you want to play again? y/n")
+  (= "y" (get-user-input #(= (some #{"y" "n"} (list %))) "please choose 'y' or 'n'")))
+
 (defn clear-screen []
   (print (str (char 27) "[2J"))
   (print (str (char 27) "[;H")))
+
+(defn goodbye []
+  (println "Goodbye!"))
