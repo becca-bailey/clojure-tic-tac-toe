@@ -37,6 +37,16 @@
     (it "should display a welcome message"
       (should-invoke ui/display-welcome-message {:with []} (game-loop/game-setup))))
 
+  (context "#display-last-move"
+    (around [it]
+      (with-out-str (it)))
+
+    (it "should call #confirm-move unless last move is nil"
+      (should-invoke ui/confirm-move {:with [4 (player/human "X")]} (game-loop/display-last-move 4 state-with-computer-player)))
+
+    (it "returns nil if there is no last move (ex. for an initial board state)"
+      (should-be-nil (game-loop/display-last-move nil game-loop/initial-state))))
+
   (context "#initial-state-with-player-markers"
     (around [it]
       (with-out-str (it)))
