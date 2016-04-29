@@ -60,7 +60,7 @@
   (println "It's a tie!"))
 
 (defn confirm-move [move player]
-  (if (= player "O")
+  (if (= (:player-type player) :computer)
     (println (str "Computer played at spot " move))
     (println (str "You played at spot " move))))
 
