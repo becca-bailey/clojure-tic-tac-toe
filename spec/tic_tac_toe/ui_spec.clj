@@ -20,6 +20,30 @@
       (should (ui/is-an-available-spot? [0] "0"))
       (should-not (ui/is-an-available-spot? [0 4] "8"))))
 
+  (context "is-not-a-number?"
+    (it "returns falsey if an input string is a number"
+      (should-not (ui/is-not-a-number? "4"))
+      (should-not (ui/is-not-a-number? "0")))
+
+    (it "returns truthy if an input string is a letter or symbol"
+      (should (ui/is-not-a-number? "#"))
+      (should (ui/is-not-a-number? "A"))))
+
+  (context "is-a-valid-marker?"
+    (it "returns false if a marker is a number"
+      (should-not (ui/is-a-valid-marker? "4")))
+
+    (it "returns false if a marker is not a single character"
+      (should-not (ui/is-a-valid-marker? "123")))
+
+    (it "returns true if a marker is a letter or a symbol"
+      (should (ui/is-a-valid-marker? "@"))
+      (should (ui/is-a-valid-marker? "A"))))
+
+  (context "is-a-valid-computer-marker?"
+    (it "returns false if a marker is the same as a human marker"
+      (should-not (ui/is-a-valid-computer-marker? (player/human "$") "$"))))
+
   (context "#get-spot"
     (around [it]
       (with-out-str (it)))
@@ -84,12 +108,22 @@
           (ui/get-marker-choice (player/human nil)))))
 
     (it "prints an error if a marker is less than or greater than one character"
-      (should-contain "your choice must be a single character"
+      (should-contain "single character"
         (with-out-str
           (with-in-str "\nX" (ui/get-marker-choice (player/human nil)))))
-      (should-contain "your choice must be a single character"
+      (should-contain "single character"
         (with-out-str
-          (with-in-str "123\nX" (ui/get-marker-choice (player/human nil)))))))
+          (with-in-str "123\nX" (ui/get-marker-choice (player/human nil))))))
+
+    (it "prints an error if a marker is a number"
+      (should-contain "number"
+        (with-out-str
+          (with-in-str "3\nA" (ui/get-marker-choice (player/human nil))))))
+
+    (it "prints an error message if a computer marker is the same as a human marker"
+      (should-contain "Markers cannot be the same"
+        (with-out-str
+          (with-in-str "#\n@" (ui/get-marker-choice (player/computer nil) (player/human "#")))))))
 
   (context "#y-or-n"
     (it "returns truty if y or n"

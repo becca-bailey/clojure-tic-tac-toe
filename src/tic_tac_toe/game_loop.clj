@@ -24,12 +24,14 @@
 
 (defn initial-state-with-player-markers []
   (let [[player-1 player-2] (:players initial-state)]
-    (merge initial-state
-      {:players [
-                  (merge player-1
-                    {:marker (ui/get-marker-choice player-1)})
-                  (merge player-2
-                    {:marker (ui/get-marker-choice player-2)})]})))
+    (let [new-player-1
+          (merge player-1 {:marker
+                            (ui/get-marker-choice player-1)})
+          new-player-2
+          (merge player-2 {:marker
+                            (ui/get-marker-choice player-2 new-player-1)})]
+      (merge initial-state
+        {:players [new-player-1 new-player-2]}))))
 
 (defn game-setup []
   (ui/clear-screen)
