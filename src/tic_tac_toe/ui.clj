@@ -29,9 +29,9 @@
       user-input
       (do (print-error error-message)
         (recur (read-line))))))
-  ([condition error-message available-spots]
+  ([condition error-message possible-input]
    (loop [user-input (read-line)]
-    (if (condition available-spots user-input)
+    (if (condition possible-input user-input)
      user-input
       (do (print-error error-message)
         (recur (read-line)))))))
@@ -43,15 +43,31 @@
 (defn is-a-single-character? [input]
   (= (count input) 1))
 
+(defn is-not-a-number? [input]
+  (not (some (set (map str (range 10))) (vector input))))
+
+(defn is-a-valid-marker? [input]
+  (cond
+    (not (is-a-single-character? input))
+    (println "Marker must be a single character.")
+    (not (is-not-a-number? input))
+    (println "Marker cannot be a number."))
+  (and (is-a-single-character? input) (is-not-a-number? input)))
+
+(defn is-a-valid-computer-marker? [human-player input]
+  (if (= (:marker human-player) input)
+    (println "Markers cannot be the same."))
+  (and (is-a-valid-marker? input) (not (= (:marker human-player) input))))
+
 (defmulti get-marker-choice :player-type)
 
-(defmethod get-marker-choice :human [player]
-  (println "Choose a character to use as your marker.")
-  (get-user-input is-a-single-character? "your choice must be a single character"))
+(defmethod get-marker-choice :human [& players]
+  (println "What would you like your marker to be?")
+  (get-user-input is-a-valid-marker? "that's not a valid marker"))
 
-(defmethod get-marker-choice :computer [player]
+(defmethod get-marker-choice :computer [& players]
   (println "Choose a character for the computer's marker.")
-  (get-user-input is-a-single-character? "your choice must be a single character"))
+  (get-user-input is-a-valid-computer-marker? "that's not a valid marker" (last players))) 
 
 (defn display-winner [player]
   (if (= (:player-type player) :computer)
