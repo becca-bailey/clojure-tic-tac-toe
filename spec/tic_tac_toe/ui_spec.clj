@@ -133,7 +133,7 @@
     (it "returns falsy if anything else"
       (should-not (ui/y-or-n "cat"))))
 
-  (context "#player-would-like-to-continue"
+  (context "#player-would-like-to-continue?"
     (around [it]
       (with-out-str (it)))
 
@@ -141,23 +141,23 @@
       (should-be-a String
         (with-out-str
           (with-in-str "n"
-            (ui/player-would-like-to-continue)))))
+            (ui/player-would-like-to-continue?)))))
 
     (it "returns true if input is 'y'"
       (should= true
         (with-in-str "y"
-          (ui/player-would-like-to-continue))))
+          (ui/player-would-like-to-continue?))))
 
     (it "returns false if input is 'n'"
       (should= false
         (with-in-str "n"
-          (ui/player-would-like-to-continue))))
+          (ui/player-would-like-to-continue?))))
 
     (it "prints an error if input is anything else"
       (should-contain "please choose y or n"
         (with-out-str
           (with-in-str "cat\nn"
-            (ui/player-would-like-to-continue))))))
+            (ui/player-would-like-to-continue?))))))
 
   (context "#goodbye"
     (it "prints goodbye"
