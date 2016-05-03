@@ -22,7 +22,7 @@
 
 (defn minimax [spot player current-game-state depth]
   (let [possible-game-state (game/progress-game-state spot current-game-state)]
-    (if (game/game-over? possible-game-state (:players possible-game-state))
+    (if (game/game-over? possible-game-state)
       (score player possible-game-state depth)
       (return-min-or-max (score-for-each-possible-move player possible-game-state depth) player possible-game-state))))
 

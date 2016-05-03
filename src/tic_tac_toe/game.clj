@@ -31,8 +31,9 @@
       {:board updated-board}
       {:turn-counter (inc (:turn-counter game-state))}))
 
-(defn game-over? [game-state players]
-  (or (board/won? (:board game-state) players) (board/tie? (:board game-state) players)))
+(defn game-over? [game-state]
+  (let [players (:players game-state)]
+    (or (board/won? (:board game-state) players) (board/tie? (:board game-state) players))))
 
 (defn progress-game-state [spot current-game-state]
   (let [progressed-board
