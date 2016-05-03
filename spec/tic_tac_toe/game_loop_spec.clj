@@ -130,7 +130,7 @@
           (game-loop/play tie-state)))))
 
    (it "calls #move and recurs if the game is not an an end state"
-    (should-invoke game/game-over? {:with [will-tie-state (:players will-tie-state)] :return [false]}
+    (should-invoke game/game-over? {:with [will-tie-state] :return [false]}
       (with-in-str "1\nn"
          (game-loop/play will-tie-state)))))
 

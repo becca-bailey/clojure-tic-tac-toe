@@ -40,7 +40,7 @@
   (let [players (:players initial-game-state)]
     (let [[player-1 player-2] players]
       (loop [current-game-state initial-game-state]
-        (if (game/game-over? current-game-state players)
+        (if (game/game-over? current-game-state)
           (cond
             (board/tie? (:board current-game-state) players)
             :tie

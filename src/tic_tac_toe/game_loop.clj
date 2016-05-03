@@ -65,7 +65,7 @@
     (do
       (ui/display-board (:board game-state))
       (display-last-move last-move game-state)
-      (if (game/game-over? game-state (:players game-state))
+      (if (game/game-over? game-state)
         (win-state original-game-state game-state)
         (let [next-move (move game-state)]
           (recur (game/progress-game-state next-move game-state) next-move))))))
