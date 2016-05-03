@@ -7,10 +7,16 @@
             [tic-tac-toe.ai :as ai]
             [tic-tac-toe.player :as player]))
 
-(defn current-player-type [game-state]
-  (:player-type (game/current-player game-state)))
+(def player-1 (player/human "X"))
+(def player-2 (player/computer "O"))
+(def default-players [player-1 player-2])
 
-(def state-with-computer-player (game/progress-game-state 4 game-loop/initial-state))
+(def tie-board (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
+(def x-wins (board/make-board {"X" #{0 4 8} "O" #{1 7}}))
+(def x-wins-state (game/game-state x-wins default-players))
+(def tie-state (game/game-state tie-board default-players))
+(def will-tie-state
+  (game/game-state (board/make-board {"X" #{3 4 6 8} "O" #{0 2 5 7}}) default-players))
 
 (defn current-player-type [game-state]
   (:player-type (game/current-player game-state)))
@@ -47,7 +53,8 @@
       (with-out-str (it)))
 
     (it "should call #confirm-move unless last move is nil"
-      (should-invoke ui/confirm-move {:with [4 (player/human "X")]} (game-loop/display-last-move 4 state-with-computer-player)))
+      (should-invoke ui/confirm-move {:with [4 (player/human "X")]}
+        (game-loop/display-last-move 4 state-with-computer-player)))
 
     (it "returns nil if there is no last move (ex. for an initial board state)"
       (should-be-nil (game-loop/display-last-move nil game-loop/initial-state))))
@@ -69,4 +76,71 @@
     (it "sets the marker for the computer"
       (should= "#"
         (with-in-str "$\n#"
-          (:marker (second (:players (game-loop/initial-state-with-player-markers)))))))))
+          (:marker (second (:players (game-loop/initial-state-with-player-markers))))))))
+
+  (context "#play"
+
+   (around [it]
+     (with-out-str (it)))
+
+   (it "calls #player-would-like-to-continue if game is an an end state"
+     (should-invoke ui/player-would-like-to-continue? {:with []}
+       (with-in-str "n"
+         (game-loop/play tie-state)))
+
+     (should-invoke ui/player-would-like-to-continue? {:with []}
+       (with-in-str "n"
+         (game-loop/play x-wins-state))))
+
+   (it "ends the game if the board has a winner"
+     (should-invoke ui/display-winner {:with [player-1]}
+        (with-in-str "n"
+          (game-loop/play x-wins-state))))
+
+   (it "ends the game if the board is a tie"
+     (should-invoke ui/display-tie {:with []}
+       (with-in-str "n"
+         (game-loop/play tie-state))))
+
+   (it "ends the game if the user inputs 'n' in an end-game state"
+     (should-invoke ui/goodbye {:with []}
+       (with-in-str "n"
+         (game-loop/play tie-state))))
+
+   (it "recurs the game loop is the user inputs 'y' in an end-game-state"
+     (should-invoke game-loop/play {:with [tie-state]}
+       (with-in-str "y\nn"
+         (game-loop/play tie-state)))
+
+    (around [it]
+      (with-out-str (it)))
+
+    (it "ends the game if the board has a winner"
+      (should-invoke ui/display-winner {:with [player-1]}
+         (with-in-str "n"
+           (game-loop/play x-wins-state))))
+
+    (it "ends the game if the board is a tie"
+      (should-invoke ui/display-tie {:with []}
+        (with-in-str "n"
+          (game-loop/play tie-state)))))
+
+   (it "calls #move and recurs if the game is not an an end state"
+    (should-invoke game/game-over? {:with [will-tie-state (:players will-tie-state)] :return [false]}
+      (with-in-str "1\nn"
+         (game-loop/play will-tie-state)))))
+
+  (context "#main"
+    (around [it]
+      (with-out-str (it)))
+
+    (it "calls the #game-setup function"
+      (should-invoke game-loop/game-setup {:with []}
+        (with-redefs [game-loop/play (fn [game-state] true)]
+          (with-in-str "X\nO"
+            (game-loop/-main)))))
+
+    (it "calls #play with a new game"
+      (should-invoke game-loop/play {:with [game-loop/initial-state]}
+        (with-in-str "X\nO"
+          (game-loop/-main))))))

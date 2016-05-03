@@ -41,28 +41,34 @@
   (if last-move
     (ui/confirm-move last-move (game/switch-player (game/current-player game-state) game-state))))
 
+(declare play)
+
+(defn game-repeat? [original-game-state]
+  (if (ui/player-would-like-to-continue?)
+    (play original-game-state)
+    (ui/goodbye)))
+
+(defn win-state [original-game-state current-game-state]
+  (cond
+    (board/winner (:board current-game-state) (:players current-game-state))
+    (do
+      (ui/display-winner (board/winner (:board current-game-state) (:players current-game-state)))
+      (game-repeat? original-game-state))
+    (board/tie? (:board current-game-state) (:players current-game-state))
+    (do
+      (ui/display-tie)
+      (game-repeat? original-game-state))))
+      
 (defn play [original-game-state]
   (loop [game-state original-game-state
          last-move nil]
     (do
       (ui/display-board (:board game-state))
       (display-last-move last-move game-state)
-      (cond
-        (board/winner (:board game-state) (:players game-state))
-        (do
-          (ui/display-winner (board/winner (:board game-state) (:players game-state)))
-          (if (ui/player-would-like-to-continue)
-            (play original-game-state)
-            (ui/goodbye)))
-        (board/tie? (:board game-state) (:players game-state))
-        (do
-          (ui/display-tie)
-          (if (ui/player-would-like-to-continue)
-            (play original-game-state)
-            (ui/goodbye)))
-        :no-winner-or-tie
-          (let [next-move (move game-state)]
-            (recur (game/progress-game-state next-move game-state) next-move))))))
+      (if (game/game-over? game-state (:players game-state))
+        (win-state original-game-state game-state)
+        (let [next-move (move game-state)]
+          (recur (game/progress-game-state next-move game-state) next-move))))))
 
 (defn -main []
   (game-setup)

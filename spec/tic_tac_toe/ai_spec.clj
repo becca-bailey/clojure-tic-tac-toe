@@ -13,7 +13,7 @@
 
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def o-wins (board/make-board {"O" #{3 4 5}}))
-(def tie-game (board/make-board {"X" #{1 3 4 6 8 "O" #{2 5 7}}}))
+(def tie-game (board/make-board {"X" #{1 3 4 6 8} "O" #{2 5 7}}))
 (def initial-state
   (game/game-state board/initial-board default-players))
 (def x-will-win-state

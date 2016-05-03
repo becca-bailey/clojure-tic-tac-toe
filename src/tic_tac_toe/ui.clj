@@ -67,7 +67,7 @@
 
 (defmethod get-marker-choice :computer [& players]
   (println "Choose a character for the computer's marker.")
-  (get-user-input is-a-valid-computer-marker? "that's not a valid marker" (last players))) 
+  (get-user-input is-a-valid-computer-marker? "that's not a valid marker" (last players)))
 
 (defn display-winner [player]
   (if (= (:player-type player) :computer)
@@ -85,7 +85,7 @@
 (defn y-or-n [input]
   (some #{"y" "n"} (list input)))
 
-(defn player-would-like-to-continue []
+(defn player-would-like-to-continue? []
   (println "Do you want to play again? y/n")
   (= "y" (get-user-input y-or-n "please choose y or n")))
 
