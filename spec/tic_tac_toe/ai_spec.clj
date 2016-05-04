@@ -42,11 +42,11 @@
       (loop [current-game-state initial-game-state]
         (if (game/game-over? current-game-state)
           (cond
-            (board/tie? (:board current-game-state) players)
+            (game/tie? current-game-state)
             :tie
-            (board/is-winner? (:board current-game-state) player-2)
+            (game/is-winner? current-game-state player-2)
             :computer-win
-            (board/is-winner? (:board current-game-state) player-1)
+            (game/is-winner? current-game-state player-2)
             :computer-lose)
           (if (= player-2 (:current-player current-game-state))
             (recur (ai-move current-game-state))

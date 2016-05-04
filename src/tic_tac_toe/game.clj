@@ -31,11 +31,35 @@
       {:board updated-board}
       {:turn-counter (inc (:turn-counter game-state))}))
 
-(defn game-over? [game-state]
-  (let [players (:players game-state)]
-    (or (board/won? (:board game-state) players) (board/tie? (:board game-state) players))))
-
 (defn progress-game-state [spot current-game-state]
   (let [progressed-board
          (board/place-marker (:board current-game-state) spot (:marker (current-player current-game-state)))]
     (update-board current-game-state progressed-board)))
+
+(defn is-winner? [game-state player]
+  (loop [possible-wins board/winning-combinations]
+    (cond
+      (empty? possible-wins)
+      false
+      (board/is-a-winning-combination? (:board game-state) (first possible-wins) (:marker player))
+      true
+      :else (recur (rest possible-wins)))))
+
+(defn won? [game-state]
+  (let [[player-1 player-2] (:players game-state)]
+    (or (is-winner? game-state player-1) (is-winner? game-state player-2))))
+
+(defn tie? [game-state]
+  (and (every? string? (:board game-state)) (not (won? game-state))))
+
+(defn game-over? [game-state]
+  (or (won? game-state) (tie? game-state)))
+
+(defn winner [game-state]
+  (let [[player-1 player-2] (:players game-state)]
+    (cond
+      (is-winner? game-state player-1)
+      player-1
+      (is-winner? game-state player-2)
+      player-2
+      :no-winner false)))
