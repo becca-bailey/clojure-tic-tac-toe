@@ -75,14 +75,14 @@
 
     (it "goes for the winning move when one is available"
       (let [available-winning-move-2 (game/game-state (board/make-board {"X" #{0 1} "O" #{3 8}}) default-players)]
-         (should= 2 (ai/best-computer-move available-winning-move-2))))
+         (should= 2 (ai/best-computer-move available-winning-move-2)))))
 
-    (it "always wins or ties against a random player"
-      (dotimes [_ 100]
-        (should-not= :computer-lose (test-game random-first-move)))))
+ ;   (it "always wins or ties against a random player")
+ ;     (dotimes [_ 100]
+ ;       (should-not= :computer-lose (test-game random-first-move))))
 
-    ; (it "chooses a spot spot when given an empty board"
-    ;   (should= 8 (ai/best-computer-move initial-state))))
+ ;    (it "chooses a spot spot when given an empty board"
+ ;      (should= 8 (ai/best-computer-move initial-state))
 
     ; ^ this test passes, but takes a long time.
 

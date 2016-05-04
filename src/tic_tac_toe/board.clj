@@ -1,4 +1,5 @@
-(ns tic-tac-toe.board)
+(ns tic-tac-toe.board
+  (:require [clojure.math.numeric-tower :as math]))
 
 (def initial-board [0 1 2 3 4 5 6 7 8])
 
@@ -18,9 +19,39 @@
    (let [players (keys players-and-spots) spots (vals players-and-spots)]
     (into [] (map #(replace-with-player-marker players spots %) initial-board))))
 
-(def winning-combinations [[0 1 2] [3 4 5] [6 7 8]
-                           [0 3 6] [1 4 7] [2 5 8]
-                           [0 4 8] [2 4 6]])
+(defn grid-size [board]
+  (math/sqrt (count board)))
+
+(defn row-start [grid-size] 
+  (filter #(= 0 (mod % grid-size)) (range (math/expt grid-size 2))))
+
+(defn col-start [grid-size] 
+  (range grid-size)) 
+
+(defn diagonal-start [grid-size]
+   (conj [0] (dec grid-size))) 
+
+(defn rows [grid-size]
+  (map #(into [] (range % (+ % grid-size))) (row-start grid-size)))
+
+(defn cols [grid-size]
+  (for [col-start (col-start grid-size)]
+   (loop [col (vector col-start)]
+     (if (= grid-size (count col))
+      col
+      (recur (conj col (+ col-start (* (count col) grid-size)))))))) 
+
+(defn diagonals [grid-size]
+  (for [diagonal-start (diagonal-start grid-size)]
+    (loop [diagonal (vector diagonal-start)]
+      (if (= grid-size (count diagonal)) 
+        diagonal
+        (if (= 0 diagonal-start)     
+          (recur (conj diagonal (+ (inc grid-size) (last diagonal))))
+          (recur (conj diagonal (+ (dec grid-size) (last diagonal)))))))))
+
+(defn winning-combinations [grid-size]
+  (apply concat [(rows grid-size) (cols grid-size) (diagonals grid-size)]))
 
 (defn marker-is-in-spot [board spot marker]
   (= marker (nth board spot)))

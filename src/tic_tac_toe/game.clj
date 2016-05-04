@@ -37,7 +37,7 @@
     (update-board current-game-state progressed-board)))
 
 (defn is-winner? [game-state player]
-  (loop [possible-wins board/winning-combinations]
+  (loop [possible-wins (board/winning-combinations (board/grid-size (:board game-state)))] 
     (cond
       (empty? possible-wins)
       false

@@ -9,10 +9,21 @@
 (def default-players
   [player-1 player-2])
 
+(def blank-3x3 [0 1 2 3 4 5 6 7 8])
+(def blank-4x4 [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
+
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def o-wins (board/make-board {"O" #{3 4 5}}))
 (def tie-game (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
 (def first-move-x (board/make-board {"X" #{4}}))
+
+(def winning-combinations-3x3 [[0 1 2] [3 4 5] [6 7 8]
+                               [0 3 6] [1 4 7] [2 5 8]
+                               [0 4 8] [2 4 6]])
+
+(def winning-combinations-4x4 [[0 1 2 3] [4 5 6 7] [8 9 10 11] [12 13 14 15]
+                               [0 4 8 12] [1 5 9 13] [2 6 10 14] [3 7 11 15]
+                               [0 5 10 15] [3 6 9 12]])
 
 (describe "Board"
   (context "initial-board"
@@ -44,4 +55,58 @@
   (context "#spot-is-empty"
     (it "returns true if a spot is empty"
       (should= true (board/spot-is-empty first-move-x 0))
-      (should= false (board/spot-is-empty first-move-x 4)))))
+      (should= false (board/spot-is-empty first-move-x 4))))
+
+  (context "#grid-size"
+    (it "returs grid size for a square board"
+      (should= 3 (board/grid-size blank-3x3))
+      (should= 4 (board/grid-size blank-4x4))))
+
+  (context "#row-start"
+    (it "returns a collection of spots in the beginning of a row based on the grid size"
+      (should= [0 3 6] (board/row-start 3))
+      (should= [0 4 8 12] (board/row-start 4))
+      (should= [0 5 10 15 20] (board/row-start 5))))
+
+  (context "#col-start"
+    (it "returns a collecion of spots in the beginning of a column based on the grid size"
+      (should= [0 1 2] (board/col-start 3))
+      (should= [0 1 2 3] (board/col-start 4))
+      (should= [0 1 2 3 4] (board/col-start 5))))
+
+  (context "#diagonal-start"
+    (it "returns a collection of spots in the beginning of a diagonal row based on the grid size"
+      (should= [0 2] (board/diagonal-start 3))
+      (should= [0 3] (board/diagonal-start 4))
+      (should= [0 4] (board/diagonal-start 5))))
+
+  (context "#rows"
+    (it "returns a collection of rows based on the grid size"
+      (should= [[0 1 2] [3 4 5] [6 7 8]]
+               (board/rows 3))
+      (should= [[0 1 2 3] [4 5 6 7] [8 9 10 11] [12 13 14 15]]
+               (board/rows 4))))
+
+  (context "#cols"
+    (it "returns a collection of columns based on the grid size"
+      (should= [[0 3 6] [1 4 7] [2 5 8]]
+               (board/cols 3))
+      (should= [[0 4 8 12] [1 5 9 13] [2 6 10 14] [3 7 11 15]]
+               (board/cols 4))))
+
+  (context "#diagonals"
+    (it "returns a collection of diagonals based on the grid size"
+      (should= [[0 4 8] [2 4 6]]
+               (board/diagonals 3))
+      (should= [[0 5 10 15] [3 6 9 12]]
+               (board/diagonals 4))))
+
+  (context "#winning-combinations"
+    (it "returns a collection of winning combinations based on the grid size"
+      (should= winning-combinations-3x3 (board/winning-combinations 3))
+      (should= winning-combinations-4x4 (board/winning-combinations 4)))))
+
+  ; (context "#generate-board-string"
+  ;   (it "returns a string for the UI to display"
+  ;     (should= grid-three-string (board/generate-board-string blank-3x3))
+  ;     (should= grid-four-string (board/generate-board-string blank-4x4)))))
