@@ -50,11 +50,11 @@
 
 (defn win-state [original-game-state current-game-state]
   (cond
-    (board/winner (:board current-game-state) (:players current-game-state))
+    (game/won? current-game-state)
     (do
-      (ui/display-winner (board/winner (:board current-game-state) (:players current-game-state)))
+      (ui/display-winner (game/winner current-game-state))
       (game-repeat? original-game-state))
-    (board/tie? (:board current-game-state) (:players current-game-state))
+    (game/tie? current-game-state)
     (do
       (ui/display-tie)
       (game-repeat? original-game-state))))
@@ -70,6 +70,9 @@
         (let [next-move (move game-state)]
           (recur (game/progress-game-state next-move game-state) next-move))))))
 
-(defn -main []
-  (game-setup)
-  (play (initial-state-with-player-markers)))
+(defn -main [& args]
+  (let [[board-type] args]
+   (if (= board-type "4x4")
+    "playing with a 4x4 board"
+    (do (game-setup)
+      (play (initial-state-with-player-markers))))))

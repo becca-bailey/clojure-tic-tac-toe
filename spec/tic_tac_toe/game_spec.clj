@@ -4,12 +4,18 @@
             [tic-tac-toe.board :as board]
             [tic-tac-toe.player :as player]))
 
+(def player-1 (player/human "X"))
+(def player-2 (player/computer "O"))
+
 (def default-players
-  [(player/human "X") (player/computer "O")])
+  [player-1 player-2])
 
 (def first-move-x (board/make-board {"X" #{4}}))
 (def x-wins (board/make-board {"X" #{0 4 8}}))
-(def tie-game (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
+(def tie-board (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
+(def first-move-state (game/game-state first-move-x default-players))
+(def x-win-state (game/game-state x-wins default-players))
+(def tie-state (game/game-state tie-board default-players))
 
 (describe "Game"
   (context "#switch-player"
@@ -38,11 +44,9 @@
 
     (context "#game-over"
       (it "returns true if a player has won or if game is tied"
-        (let [first-move-state (game/game-state first-move-x default-players)
-              x-win-state (game/game-state x-wins default-players)]
-          (should= true (game/game-over? tie-game))
-          (should= true (game/game-over? x-win-state))
-          (should= false (game/game-over? first-move-state)))))
+        (should (game/game-over? tie-state))
+        (should (game/game-over? x-win-state))
+        (should-not (game/game-over? first-move-state))))
 
     (context "#progress-game-state"
       (it "returns a state with an increased turn counter"
@@ -55,4 +59,30 @@
 
     (context "#current-player"
       (it "returns the current player based on the first player and the game state"
-        (should= (player/human "X") (game/current-player game/initial-state))))))
+        (should= (player/human "X") (game/current-player game/initial-state))))
+
+    (context "#winner"
+      (it "returns winning player"
+        (should= player-1 (game/winner x-win-state)))
+
+      (it "returns false if the game is a tie"
+        (should-not (game/winner tie-state))))
+
+    (context "#is-winner?"
+      (it "returns true if a given player has won the game"
+        (should (game/is-winner? x-win-state player-1))
+        (should-not (game/is-winner? x-win-state player-2))
+        (should-not (game/is-winner? tie-state player-1))
+        (should-not (game/is-winner? tie-state player-2))))
+
+    (context "#won?"
+      (it "returns true if any player has won the game"
+        (should (game/won? x-win-state))
+        (should-not (game/won? tie-state))))
+
+    (context "#tie?"
+      (it "returns true if there is a tie"
+        (should (game/tie? tie-state)))
+
+      (it "returns false if there is a winner"
+        (should-not (game/tie? x-win-state))))))

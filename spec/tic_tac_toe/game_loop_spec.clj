@@ -143,4 +143,8 @@
     (it "calls #play with a new game"
       (should-invoke game-loop/play {:with [game-loop/initial-state]}
         (with-in-str "X\nO"
-          (game-loop/-main))))))
+          (game-loop/-main))))
+
+    (it "starts a new game with a 4x4 board if '4x4' is input as a command line argument"
+      (should= "playing with a 4x4 board"
+        (game-loop/-main "4x4")))))
