@@ -7,15 +7,12 @@
 (def player-1 (player/human "X"))
 (def player-2 (player/computer "O"))
 
-(def default-players
-  [player-1 player-2])
-
 (def first-move-x (board/make-board {"X" #{4}}))
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def tie-board (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
-(def first-move-state (game/game-state first-move-x default-players))
-(def x-win-state (game/game-state x-wins default-players))
-(def tie-state (game/game-state tie-board default-players))
+(def first-move-state (game/game-state first-move-x))
+(def x-win-state (game/game-state x-wins))
+(def tie-state (game/game-state tie-board))
 
 (describe "Game"
   (context "#switch-player"

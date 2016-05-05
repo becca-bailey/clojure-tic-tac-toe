@@ -8,30 +8,25 @@
 (def player-1 (player/human "X"))
 (def player-2 (player/computer "O"))
 
-(def default-players
-  [player-1 player-2])
-
 (def x-wins (board/make-board {"X" #{0 4 8}}))
 (def o-wins (board/make-board {"O" #{3 4 5}}))
 (def tie-game (board/make-board {"X" #{1 3 4 6 8} "O" #{2 5 7}}))
 (def initial-state
-  (game/game-state board/initial-board default-players))
+  (game/game-state board/initial-board))
 (def x-will-win-state
-  (game/game-state (board/make-board {"X" #{0 4} "O" #{1 3}}) default-players))
+  (game/game-state (board/make-board {"X" #{0 4} "O" #{1 3}})))
 (def x-will-win-state-4x4
-  (game/game-state (board/make-board {"X" #{0 5 10} "O" #{3 4}}) default-players))
+  (game/game-state (board/make-board {"X" #{0 5 10} "O" #{3 4}})))
 (def o-will-win-state
-  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) default-players))
-(def either-will-win-state
-  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}}) default-players))
+  (game/game-state (board/make-board {"X" #{4 6} "O" #{0 1}})))
 (def will-tie-state
-  (game/game-state (board/make-board {"X" #{3 4 6 8}"O" #{0 2 5 7}}) default-players))
+  (game/game-state (board/make-board {"X" #{3 4 6 8}"O" #{0 2 5 7}})))
 (def will-tie-state-4x4
-  (game/game-state (board/make-board {"X" #{2 3 4 5 9 12 14 15} "O" #{0 1 6 8 10 11 13}}) default-players))
+  (game/game-state (board/make-board {"X" #{2 3 4 5 9 12 14 15} "O" #{0 1 6 8 10 11 13}})))
 (def available-winning-move
-  (game/game-state (board/make-board {"X" #{1 7} "O" #{3 5 8}}) default-players))
+  (game/game-state (board/make-board {"X" #{1 7} "O" #{3 5 8}})))
 (def available-winning-move-4x4
-  (game/game-state (board/make-board {"X" #{0 5 6 12} "O" #{3 7 15}}) default-players))
+  (game/game-state (board/make-board {"X" #{0 5 6 12} "O" #{3 7 15}})))
 
 (defn random-move [game-state]
   (let [random-spot
@@ -68,27 +63,27 @@
       (should= (first (board/available-spots (:board will-tie-state-4x4))) (ai/best-computer-move will-tie-state-4x4)))
 
     (it "chooses the best move when two moves are available"
-      (let [two-moves-state-2 (game/game-state (board/make-board {"X" #{2 3 6 8} "O" #{0 4 5}}) default-players)
-            two-moves-state (game/game-state (board/make-board {"X" #{0 2 3 7} "O" #{1 4 5}}) default-players)
-            two-moves-state-4x4 (game/game-state (board/make-board {"X" #{2 4 5 7 10 11 13 15} "O" #{0 1 6 8 9 12}}) default-players)]
+      (let [two-moves-state-2 (game/game-state (board/make-board {"X" #{2 3 6 8} "O" #{0 4 5}}))
+            two-moves-state (game/game-state (board/make-board {"X" #{0 2 3 7} "O" #{1 4 5}}))
+            two-moves-state-4x4 (game/game-state (board/make-board {"X" #{2 4 5 7 10 11 13 15} "O" #{0 1 6 8 9 12}}))]
         (should= 7 (ai/best-computer-move two-moves-state-2))
         (should= 6 (ai/best-computer-move two-moves-state))
         (should= 3 (ai/best-computer-move two-moves-state-4x4))))
 
     (it "chooses the best move when there are three moves available"
-      (let [three-moves-state (game/game-state (board/make-board {"X" #{1 3 4} "O" #{0 5 6}}) default-players)
-            three-moves-state-4x4 (game/game-state (board/make-board {"X" #{4 5 7 10 11 13 15} "O" #{0 1 6 8 9 12}}) default-players)]
+      (let [three-moves-state (game/game-state (board/make-board {"X" #{1 3 4} "O" #{0 5 6}}))
+            three-moves-state-4x4 (game/game-state (board/make-board {"X" #{4 5 7 10 11 13 15} "O" #{0 1 6 8 9 12}}))]
          (should= 7 (ai/best-computer-move three-moves-state))
          (should= 3 (ai/best-computer-move three-moves-state-4x4))))
 
     (it "blocks the opponent from winning"
       (should= 8 (ai/best-computer-move x-will-win-state)))
-      ; (should= 15 (ai/best-computer-move x-will-win-state-4x4)))
+      ; (should= 15 (ai/best-computer-move x-will-win-state-4x4))))
 
     (it "goes for the winning move when one is available"
-      (let [available-winning-move-2 (game/game-state (board/make-board {"X" #{0 1} "O" #{3 8}}) default-players)]
+      (let [available-winning-move-2 (game/game-state (board/make-board {"X" #{0 1} "O" #{3 8}}))]
          (should= 2 (ai/best-computer-move available-winning-move-2)))))
-         ; (should= 11 (ai/best-computer-move available-winning-move-4x4)))))
+         ; (should= 11 (ai/best-computer-move available-winning-move-4x4))))
 
  ;   (it "always wins or ties against a random player")
  ;     (dotimes [_ 100]

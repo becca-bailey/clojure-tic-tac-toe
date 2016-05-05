@@ -9,14 +9,13 @@
 
 (def player-1 (player/human "X"))
 (def player-2 (player/computer "O"))
-(def default-players [player-1 player-2])
 
 (def tie-board (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
 (def x-wins (board/make-board {"X" #{0 4 8} "O" #{1 7}}))
-(def x-wins-state (game/game-state x-wins default-players))
-(def tie-state (game/game-state tie-board default-players))
+(def x-wins-state (game/game-state x-wins))
+(def tie-state (game/game-state tie-board))
 (def will-tie-state
-  (game/game-state (board/make-board {"X" #{3 4 6 8} "O" #{0 2 5 7}}) default-players))
+  (game/game-state (board/make-board {"X" #{3 4 6 8} "O" #{0 2 5 7}})))
 
 (def winning-combinations-3x3 [[0 1 2] [3 4 5] [6 7 8]
                                [0 3 6] [1 4 7] [2 5 8]

@@ -3,12 +3,6 @@
             [tic-tac-toe.board :as board]
             [tic-tac-toe.player :as player]))
 
-(def player-1 (player/human "X"))
-(def player-2 (player/computer "O"))
-
-(def default-players
-  [player-1 player-2])
-
 (def grid-three-string " 0 | 1 | 2 \n-----------\n 3 | 4 | 5 \n-----------\n 6 | 7 | 8 ")
 (def grid-four-string " 0 | 1 | 2 | 3 \n---------------\n 4 | 5 | 6 | 7 \n---------------\n 8 | 9 | 10 | 11 \n---------------\n 12 | 13 | 14 | 15 ")
 
