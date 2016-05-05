@@ -7,9 +7,9 @@
 (def player-1 (player/human "X"))
 (def player-2 (player/computer "O"))
 
-(def first-move-x (board/make-board {"X" #{4}}))
-(def x-wins (board/make-board {"X" #{0 4 8}}))
-(def tie-board (board/make-board {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
+(def first-move-x (board/make-board 3 {"X" #{4}}))
+(def x-wins (board/make-board 3 {"X" #{0 4 8}}))
+(def tie-board (board/make-board 3 {"X" #{1 3 4 6 8} "O" #{0 2 5 7}}))
 (def first-move-state (game/game-state first-move-x))
 (def x-win-state (game/game-state x-wins))
 (def tie-state (game/game-state tie-board))

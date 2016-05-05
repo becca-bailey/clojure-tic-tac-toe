@@ -17,21 +17,21 @@
       player-2
       :else current-spot)))
 
-(defn make-board [players-and-spots]
+(defn make-board [grid-size players-and-spots]
    (let [players (keys players-and-spots) spots (vals players-and-spots)]
     (into [] (map #(replace-with-player-marker players spots %) initial-board))))
 
 (defn grid-size [board]
   (math/sqrt (count board)))
 
-(defn row-start [grid-size] 
+(defn row-start [grid-size]
   (filter #(= 0 (mod % grid-size)) (range (math/expt grid-size 2))))
 
-(defn col-start [grid-size] 
-  (range grid-size)) 
+(defn col-start [grid-size]
+  (range grid-size))
 
 (defn diagonal-start [grid-size]
-   (conj [0] (dec grid-size))) 
+   (conj [0] (dec grid-size)))
 
 (defn rows [grid-size]
   (map #(into [] (range % (+ % grid-size))) (row-start grid-size)))
@@ -41,14 +41,14 @@
    (loop [col (vector col-start)]
      (if (= grid-size (count col))
       col
-      (recur (conj col (+ col-start (* (count col) grid-size)))))))) 
+      (recur (conj col (+ col-start (* (count col) grid-size))))))))
 
 (defn diagonals [grid-size]
   (for [diagonal-start (diagonal-start grid-size)]
     (loop [diagonal (vector diagonal-start)]
-      (if (= grid-size (count diagonal)) 
+      (if (= grid-size (count diagonal))
         diagonal
-        (if (= 0 diagonal-start)     
+        (if (= 0 diagonal-start)
           (recur (conj diagonal (+ (inc grid-size) (last diagonal))))
           (recur (conj diagonal (+ (dec grid-size) (last diagonal)))))))))
 
@@ -77,5 +77,4 @@
   (let [size (grid-size board)]
     (let [rows (map #(str " " (clojure.string/join " | " %) " ") (partition size board))
           divider (str "\n" (clojure.string/join (repeat (+ (dec size) (* 3 size)) "-")) "\n")]
-      (clojure.string/join divider rows)))) 
-
+      (clojure.string/join divider rows))))
