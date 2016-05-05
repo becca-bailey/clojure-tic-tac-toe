@@ -3,6 +3,8 @@
 
 (def initial-board [0 1 2 3 4 5 6 7 8])
 
+(def blank-4x4 [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
+
 (defn place-marker [board spot marker]
   (assoc board spot marker))
 
@@ -70,3 +72,10 @@
 
 (defn available-spots [board]
   (filter integer? board))
+
+(defn generate-board-string [board]
+  (let [size (grid-size board)]
+    (let [rows (map #(str " " (clojure.string/join " | " %) " ") (partition size board))
+          divider (str "\n" (clojure.string/join (repeat (+ (dec size) (* 3 size)) "-")) "\n")]
+      (clojure.string/join divider rows)))) 
+

@@ -1,5 +1,6 @@
 (ns tic-tac-toe.ui
-  (:require [tic-tac-toe.player :as player]))
+  (:require [tic-tac-toe.player :as player]
+            [tic-tac-toe.board :as board]))
 
 (defn clear-screen []
   (print (str (char 27) "[2J"))
@@ -7,11 +8,7 @@
 
 (defn display-board [board]
   (clear-screen)
-  (println (str "\n " (first board) " | " (nth board 1) " | " (nth board 2) " \n"
-                  "-----------\n"
-                  " " (nth board 3) " | " (nth board 4) " | " (nth board 5) " \n"
-                  "-----------\n"
-                  " " (nth board 6) " | " (nth board 7) " | " (nth board 8) " \n")))
+  (println (str "\n" (board/generate-board-string board) "\n")))
 
 (defn display-welcome-message []
   (println "Welcome to Tic Tac Toe in Clojure!\n"))
