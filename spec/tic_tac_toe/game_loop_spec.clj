@@ -24,7 +24,7 @@
 (defn current-player-type [game-state]
   (:player-type (game/current-player game-state)))
 
-(def state-with-computer-player (game/progress-game-state 4 game-loop/initial-3x3-state))
+(def state-with-computer-player (game/progress-game-state 4 (game/initial-state 3)))
 
 (describe "Game loop"
   (context "#move"
@@ -32,9 +32,9 @@
       (with-out-str (it)))
 
     (it "should ask for user input if the current player is a human"
-      (should= :human (current-player-type game-loop/initial-3x3-state))
+      (should= :human (current-player-type (game/initial-state 3)))
       (should-invoke ui/get-spot {:with ['(0 1 2 3 4 5 6 7 8)]}
-        (game-loop/move game-loop/initial-3x3-state)))
+        (game-loop/move (game/initial-state 3))))
 
     (it "should call #best-computer-move if it is called on a game state with a current computer player"
       (should= :computer (current-player-type state-with-computer-player))
@@ -62,27 +62,27 @@
         (game-loop/display-last-move 4 state-with-computer-player)))
 
     (it "returns nil if there is no last move (ex. for an initial board state)"
-      (should-be-nil (game-loop/display-last-move nil game-loop/initial-3x3-state))))
+      (should-be-nil (game-loop/display-last-move nil (game/initial-state 3)))))
 
   (context "#set-player-markers"
     (around [it]
       (with-out-str (it)))
 
     (it "initializes a game state with an empty board"
-      (should= game-loop/initial-3x3
+      (should= (board/initial-board 3)
         (:board
           (with-in-str "X\nO"
-            (game-loop/set-player-markers game-loop/initial-3x3-state)))))
+            (game-loop/set-player-markers (game/initial-state 3))))))
 
     (it "sets the marker for the human player"
        (should= "$"
          (with-in-str "$\n#"
-           (:marker (first (:players (game-loop/set-player-markers game-loop/initial-3x3-state)))))))
+           (:marker (first (:players (game-loop/set-player-markers (game/initial-state 3))))))))
 
     (it "sets the marker for the computer"
       (should= "#"
         (with-in-str "$\n#"
-          (:marker (second (:players (game-loop/set-player-markers game-loop/initial-3x3-state))))))))
+          (:marker (second (:players (game-loop/set-player-markers (game/initial-state 3)))))))))
 
   (context "#play"
 
@@ -147,11 +147,11 @@
             (game-loop/-main)))))
 
     (it "calls #play with a new game"
-      (should-invoke game-loop/play {:with [game-loop/initial-3x3-state]}
+      (should-invoke game-loop/play {:with [(game/initial-state 3)]}
         (with-in-str "X\nO"
           (game-loop/-main))))
 
     (it "starts a new game with a 4x4 board if '4x4' is input as a command line argument"
-      (should-invoke game-loop/play {:with [game-loop/initial-4x4-state]}
+      (should-invoke game-loop/play {:with [(game/initial-state 4)]}
         (with-in-str "X\nO"
           (game-loop/-main "4x4"))))))

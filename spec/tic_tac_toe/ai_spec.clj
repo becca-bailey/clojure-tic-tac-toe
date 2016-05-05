@@ -12,7 +12,7 @@
 (def o-wins (board/make-board 3 {"O" #{3 4 5}}))
 (def tie-game (board/make-board 3 {"X" #{1 3 4 6 8} "O" #{2 5 7}}))
 (def initial-state
-  (game/game-state board/initial-board))
+  (game/game-state (board/initial-board 3)))
 (def x-will-win-state
   (game/game-state (board/make-board 3 {"X" #{0 4} "O" #{1 3}})))
 (def x-will-win-state-4x4
@@ -54,7 +54,7 @@
             (recur (random-move current-game-state))))))))
 
 (defn random-first-move []
-  (game/progress-game-state (rand-nth game/initial-board) initial-state))
+  (game/progress-game-state (rand-nth (board/initial-board 3)) (game/initial-state 3)))
 
 (describe "AI"
   (context "#ai/best-computer-move"

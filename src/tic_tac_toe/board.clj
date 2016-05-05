@@ -1,9 +1,8 @@
 (ns tic-tac-toe.board
   (:require [clojure.math.numeric-tower :as math]))
 
-(def initial-board [0 1 2 3 4 5 6 7 8])
-
-(def blank-4x4 [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
+(defn initial-board [grid-size]
+  (into [] (range (math/expt grid-size 2))))
 
 (defn place-marker [board spot marker]
   (assoc board spot marker))
@@ -19,7 +18,7 @@
 
 (defn make-board [grid-size players-and-spots]
    (let [players (keys players-and-spots) spots (vals players-and-spots)]
-    (into [] (map #(replace-with-player-marker players spots %) initial-board))))
+    (into [] (map #(replace-with-player-marker players spots %) (initial-board grid-size)))))
 
 (defn grid-size [board]
   (math/sqrt (count board)))

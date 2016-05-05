@@ -18,12 +18,6 @@
 (def default-players
   [(player/human "X") (player/computer "O")])
 
-(def initial-3x3 [0 1 2 3 4 5 6 7 8])
-(def initial-4x4 [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
-
-(def initial-3x3-state (game/game-state initial-3x3 default-players))
-(def initial-4x4-state (game/game-state initial-4x4 default-players))
-
 (defn set-player-markers [game-state]
   (let [[player-1 player-2] (:players game-state)]
     (let [new-player-1
@@ -76,5 +70,5 @@
   (game-setup)
   (let [[board-type] args]
    (if (= board-type "4x4")
-    (play (set-player-markers initial-4x4-state))
-    (play (set-player-markers initial-3x3-state)))))
+    (play (set-player-markers (game/initial-state 4)))
+    (play (set-player-markers (game/initial-state 3))))))
