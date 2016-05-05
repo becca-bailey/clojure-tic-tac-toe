@@ -18,19 +18,21 @@
 (def default-players
   [(player/human "X") (player/computer "O")])
 
-(def initial-board [0 1 2 3 4 5 6 7 8])
+(def initial-3x3 [0 1 2 3 4 5 6 7 8])
+(def initial-4x4 [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
 
-(def initial-state (game/game-state [0 1 2 3 4 5 6 7 8] default-players))
+(def initial-3x3-state (game/game-state initial-3x3 default-players))
+(def initial-4x4-state (game/game-state initial-4x4 default-players))
 
-(defn initial-state-with-player-markers []
-  (let [[player-1 player-2] (:players initial-state)]
+(defn set-player-markers [game-state]
+  (let [[player-1 player-2] (:players game-state)]
     (let [new-player-1
           (merge player-1 {:marker
                             (ui/get-marker-choice player-1)})
           new-player-2
           (merge player-2 {:marker
                             (ui/get-marker-choice player-2 new-player-1)})]
-      (merge initial-state
+      (merge game-state
         {:players [new-player-1 new-player-2]}))))
 
 (defn game-setup []
@@ -71,8 +73,8 @@
           (recur (game/progress-game-state next-move game-state) next-move))))))
 
 (defn -main [& args]
+  (game-setup)
   (let [[board-type] args]
    (if (= board-type "4x4")
-    "playing with a 4x4 board"
-    (do (game-setup)
-      (play (initial-state-with-player-markers))))))
+    (play (set-player-markers initial-4x4-state))
+    (play (set-player-markers initial-3x3-state)))))
