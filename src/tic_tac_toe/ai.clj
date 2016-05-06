@@ -14,6 +14,8 @@
       (- depth starting-score)
       :is-tie 0)))
 
+(def memoize-score (memoize score))
+
 (declare score-for-each-possible-move)
 
 (defn return-min-or-max [coll player current-game-state]
@@ -24,12 +26,14 @@
 (defn minimax [spot player current-game-state depth]
   (let [possible-game-state (game/progress-game-state spot current-game-state)]
     (if (game/game-over? possible-game-state)
-      (score player possible-game-state depth)
+      (memoize-score player possible-game-state depth)
       (return-min-or-max (score-for-each-possible-move player possible-game-state depth) player possible-game-state))))
+
+(def memoize-minimax (memoize minimax))
 
 (defn score-for-each-possible-move [player game-state depth]
   (let [possible-moves (board/available-spots (:board game-state))]
-    (zipmap possible-moves (map #(minimax % player game-state (inc depth)) possible-moves))))
+    (zipmap possible-moves (map #(memoize-minimax % player game-state (inc depth)) possible-moves))))
 
 (defn best-computer-move [current-game-state]
   (let [scores (score-for-each-possible-move (game/current-player current-game-state) current-game-state 0)]

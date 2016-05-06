@@ -28,31 +28,6 @@
 (def available-winning-move-4x4
   (game/game-state (board/make-board 4 {"X" #{0 5 6 12} "O" #{3 7 15}})))
 
-(defn random-move [game-state]
-  (let [random-spot
-          (rand-nth (board/available-spots (:board game-state)))]
-    (game/progress-game-state random-spot game-state)))
-
-(defn ai-move [game-state]
-  (let [ai-spot (ai/best-computer-move game-state)]
-    (game/progress-game-state ai-spot game-state)))
-
-(defn test-game [initial-game-state]
-  (let [players (:players initial-game-state)]
-    (let [[player-1 player-2] players]
-      (loop [current-game-state initial-game-state]
-        (if (game/game-over? current-game-state)
-          (cond
-            (game/tie? current-game-state)
-            :tie
-            (game/is-winner? current-game-state player-2)
-            :computer-win
-            (game/is-winner? current-game-state player-2)
-            :computer-lose)
-          (if (= player-2 (game/current-player current-game-state))
-            (recur (ai-move current-game-state))
-            (recur (random-move current-game-state))))))))
-
 (defn random-first-move []
   (game/progress-game-state (rand-nth (board/initial-board 3)) (game/initial-state 3)))
 
@@ -76,23 +51,61 @@
          (should= 7 (ai/best-computer-move three-moves-state))
          (should= 3 (ai/best-computer-move three-moves-state-4x4))))
 
+    (it "chooses a move when there are four moves available"
+      (let [four-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{4 5 7 10 11 15} "O" #{0 1 6 8 9 12}}))]
+        (should= 3 (ai/best-computer-move four-moves-state-4x4))))
+
+    (it "chooses a move when there are five moves available"
+      (let [five-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{4 5 7 10 11 15} "O" #{0 1 6 9 12}}))]
+        (should= 3 (ai/best-computer-move five-moves-state-4x4))))
+
+    (it "chooses a move when there are six moves available"
+      (let [six-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{4 5 7 10 15} "O" #{0 1 6 9 12}}))]
+        (should= 3 (ai/best-computer-move six-moves-state-4x4))))
+
+    (it "chooses a move when there are seven moves available"
+      (let [seven-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{4 5 7 10 15} "O" #{1 6 9 12}}))]
+        (should= 3 (ai/best-computer-move seven-moves-state-4x4))))
+
+    (it "chooses a move when there are eight moves available"
+      (let [eight-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{4 7 10 15} "O" #{1 6 9 12}}))]
+        (should= 3 (ai/best-computer-move eight-moves-state-4x4))))
+
+    (it "chooses a move when there are nine moves available"
+      (let [nine-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{4 7 10 15} "O" #{1 9 12}}))]
+        (should= 6 (ai/best-computer-move nine-moves-state-4x4))))
+
+    (it "chooses a move when there are ten moves available"
+      (let [ten-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{7 10 15} "O" #{1 9 12}}))]
+        (should= 8 (ai/best-computer-move ten-moves-state-4x4))))
+
+    (it "chooses a move when there are eleven moves available"
+      (let [eleven-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{7 10 15} "O" #{1 12}}))]
+        (should= 8 (ai/best-computer-move eleven-moves-state-4x4))))
+
+;    (it "chooses a move when there are twelve moves available"
+;      (let [twelve-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10 15} "O" #{1 12}}))]
+;        (should= 8 (ai/best-computer-move twelve-moves-state-4x4))))
+
+;    (it "chooses a move when there are thirteen moves available"
+;      (let [thirteen-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10 15} "O" #{1}}))]
+;        (should-not-be-nil (ai/best-computer-move thirteen-moves-state-4x4))))
+
+;    (it "chooses a move when there are fourteen moves available"
+;      (let [fourteen-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10} "O" #{12}}))]
+;        (should-not-be-nil (ai/best-computer-move fourteen-moves-state-4x4))))
+
     (it "blocks the opponent from winning"
-      (should= 8 (ai/best-computer-move x-will-win-state)))
-      ; (should= 15 (ai/best-computer-move x-will-win-state-4x4))))
+      (should= 8 (ai/best-computer-move x-will-win-state))
+      (should= 15 (ai/best-computer-move x-will-win-state-4x4)))
 
     (it "goes for the winning move when one is available"
       (let [available-winning-move-2 (game/game-state (board/make-board 3 {"X" #{0 1} "O" #{3 8}}))]
-         (should= 2 (ai/best-computer-move available-winning-move-2)))))
-         ; (should= 11 (ai/best-computer-move available-winning-move-4x4)))))
+         (should= 2 (ai/best-computer-move available-winning-move-2)))
+         (should= 11 (ai/best-computer-move available-winning-move-4x4)))
 
- ;   (it "always wins or ties against a random player")
- ;     (dotimes [_ 100]
- ;       (should-not= :computer-lose (test-game random-first-move))))
-
- ;    (it "chooses a spot spot when given an empty board"
- ;      (should= 8 (ai/best-computer-move initial-state))
-
-    ; ^ this test passes, but takes a long time.
+    (it "chooses a spot spot when given an empty board"
+      (should= 8 (ai/best-computer-move initial-state))))
 
   (context "#minimax"
     (context "when depth is 0"
