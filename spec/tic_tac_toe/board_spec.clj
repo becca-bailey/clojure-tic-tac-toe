@@ -4,7 +4,7 @@
             [tic-tac-toe.player :as player]))
 
 (def grid-three-string " 0 | 1 | 2 \n-----------\n 3 | 4 | 5 \n-----------\n 6 | 7 | 8 ")
-(def grid-four-string " 0 | 1 | 2 | 3 \n---------------\n 4 | 5 | 6 | 7 \n---------------\n 8 | 9 | 10 | 11 \n---------------\n 12 | 13 | 14 | 15 ")
+(def grid-four-string " 0  | 1  | 2  | 3  \n-------------------\n 4  | 5  | 6  | 7  \n-------------------\n 8  | 9  | 10 | 11 \n-------------------\n 12 | 13 | 14 | 15 ")
 
 (def x-wins (board/make-board 3 {"X" #{0 4 8}}))
 (def o-wins (board/make-board 3 {"O" #{3 4 5}}))

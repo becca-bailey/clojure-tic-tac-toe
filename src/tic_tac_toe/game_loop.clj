@@ -69,6 +69,6 @@
 (defn -main [& args]
   (game-setup)
   (let [[board-type] args]
-   (if (= board-type "4x4")
-    (play (set-player-markers (game/initial-state 4)))
-    (play (set-player-markers (game/initial-state 3))))))
+    (if (= board-type "4x4")
+      (play (set-player-markers (game/initial-state 4)))
+      (play (set-player-markers (game/initial-state 3))))))

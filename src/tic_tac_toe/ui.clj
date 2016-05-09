@@ -1,14 +1,28 @@
 (ns tic-tac-toe.ui
   (:require [tic-tac-toe.player :as player]
-            [tic-tac-toe.board :as board]))
+            [tic-tac-toe.board :as board]
+            [io.aviso.ansi :as ansi]
+            [clojure.string :as string]))
 
 (defn clear-screen []
   (print (str (char 27) "[2J"))
   (print (str (char 27) "[;H")))
 
+(defn is-not-a-number? [input]
+  (not (some (set (map str (range 16))) (vector input))))
+
+(defn color-player-markers [char]
+  (if (re-find #"\A[a-zA-Z!@#$%^&*<>?~]" char)
+    (ansi/bold-cyan char)
+    char))
+
+(defn add-color [board-string]
+  (let [chars (string/split board-string #"|")]
+    (string/join (map color-player-markers chars))))
+
 (defn display-board [board]
   (clear-screen)
-  (println (str "\n" (board/generate-board-string board) "\n")))
+  (println (str "\n" (add-color (board/generate-board-string board)) "\n")))
 
 (defn display-welcome-message []
   (println "Welcome to Tic Tac Toe in Clojure!\n"))
@@ -39,9 +53,6 @@
 
 (defn is-a-single-character? [input]
   (= (count input) 1))
-
-(defn is-not-a-number? [input]
-  (not (some (set (map str (range 10))) (vector input))))
 
 (defn is-a-valid-marker? [input]
   (cond

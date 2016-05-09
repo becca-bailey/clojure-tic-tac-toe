@@ -35,21 +35,22 @@
 (defn rows [grid-size]
   (map #(into [] (range % (+ % grid-size))) (row-start grid-size)))
 
+(defn add-to-col [col-start grid-size]
+  (reduce #(conj %1 (+ col-start (* %2 grid-size))) [] (range grid-size)))
+
 (defn cols [grid-size]
-  (for [col-start (col-start grid-size)]
-   (loop [col (vector col-start)]
-     (if (= grid-size (count col))
-      col
-      (recur (conj col (+ col-start (* (count col) grid-size))))))))
+  (map #(add-to-col % grid-size) (col-start grid-size)))
+
+(defn left-to-right-diagonal [diagonal-start grid-size]
+  (reduce #(conj %1 (+ diagonal-start (* %2 (inc grid-size)))) [] (range grid-size)))
+
+(defn right-to-left-diagonal [diagonal-start grid-size]
+  (reduce #(conj %1 (+ diagonal-start (* %2 (dec grid-size)))) [diagonal-start] (range 1 grid-size)))
 
 (defn diagonals [grid-size]
-  (for [diagonal-start (diagonal-start grid-size)]
-    (loop [diagonal (vector diagonal-start)]
-      (if (= grid-size (count diagonal))
-        diagonal
-        (if (= 0 diagonal-start)
-          (recur (conj diagonal (+ (inc grid-size) (last diagonal))))
-          (recur (conj diagonal (+ (dec grid-size) (last diagonal)))))))))
+  (let [[top-left top-right] (diagonal-start grid-size)]
+      [(left-to-right-diagonal top-left grid-size)
+       (right-to-left-diagonal top-right grid-size)]))
 
 (defn winning-combinations [grid-size]
   (apply concat [(rows grid-size) (cols grid-size) (diagonals grid-size)]))
@@ -72,8 +73,18 @@
 (defn available-spots [board]
   (filter integer? board))
 
+(defn add-space [n]
+  (if (= (count (str n)) 1)
+    (str n " ")
+    n))
+
+(defn column-padding [row size]
+  (if (> size 3)
+    (str " " (clojure.string/join " | " (map add-space row)) " ")
+    (str " " (clojure.string/join " | " row) " ")))
+
 (defn generate-board-string [board]
   (let [size (grid-size board)]
-    (let [rows (map #(str " " (clojure.string/join " | " %) " ") (partition size board))
-          divider (str "\n" (clojure.string/join (repeat (+ (dec size) (* 3 size)) "-")) "\n")]
+    (let [rows (map #(column-padding % size) (partition size board))
+          divider (str "\n" (clojure.string/join (repeat (count (first rows)) "-")) "\n")]
       (clojure.string/join divider rows))))

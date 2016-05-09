@@ -11,10 +11,9 @@
     :players [(player/human "X") (player/computer "O")]
     :turn-counter (set-turn-counter board)})
   ([board players]
-   (let [[player-1 player-2] players]
-     {:board board
-      :players [player-1 player-2]
-      :turn-counter (set-turn-counter board)})))
+   {:board board
+    :players players
+    :turn-counter (set-turn-counter board)}))
 
 (defn initial-state [grid-size]
   (game-state (board/initial-board grid-size) [(player/human "X") (player/computer "O")]))

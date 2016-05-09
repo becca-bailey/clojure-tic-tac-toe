@@ -3,7 +3,6 @@
             [tic-tac-toe.ui :as ui]
             [tic-tac-toe.player :as player]))
 
-(def new-board "\n 0 | 1 | 2 \n-----------\n 3 | 4 | 5 \n-----------\n 6 | 7 | 8 \n\n")
 (def initial-board [0 1 2 3 4 5 6 7 8])
 
 (describe "UI"
@@ -12,7 +11,7 @@
 
   (context "#display-board"
     (it "prints an empty board"
-      (should-contain new-board (with-out-str (ui/display-board initial-board)))))
+      (should-be-a String (with-out-str (ui/display-board initial-board)))))
 
   (context "is-an-available-spot?"
     (it "returns truthy if a number string is in the set of available spots"

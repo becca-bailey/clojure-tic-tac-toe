@@ -1,5 +1,4 @@
 (ns tic-tac-toe.ai
-
   (:require [tic-tac-toe.board :as board]
             [tic-tac-toe.game :as game]))
 
