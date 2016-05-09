@@ -12,7 +12,7 @@
       (- starting-score depth)
       (game/is-winner? current-game-state (game/switch-player player current-game-state))
       (- depth starting-score)
-      :is-tie 0)))
+      :no-winner 0)))
 
 (def memoize-score (memoize score))
 
@@ -23,10 +23,15 @@
     (apply max (vals coll))
     (apply min (vals coll))))
 
+(def max-depth 4) 
+
+(defn is-max-depth? [game-state depth]
+  (and (>= (count (:board game-state)) 16) (= depth max-depth)))
+
 (defn minimax [spot player current-game-state depth]
   (let [possible-game-state (game/progress-game-state spot current-game-state)]
-    (if (game/game-over? possible-game-state)
-      (memoize-score player possible-game-state depth)
+    (if (or (game/game-over? possible-game-state) (is-max-depth? possible-game-state depth))
+      (score player possible-game-state depth)
       (return-min-or-max (score-for-each-possible-move player possible-game-state depth) player possible-game-state))))
 
 (def memoize-minimax (memoize minimax))

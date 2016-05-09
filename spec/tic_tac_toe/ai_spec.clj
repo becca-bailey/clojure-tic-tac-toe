@@ -133,8 +133,8 @@
 
     (it "goes for the winning move when one is available"
       (let [available-winning-move-2 (game/game-state (board/make-board 3 {"X" #{0 1} "O" #{3 8}}))]
-         (should= 2 (ai/best-computer-move available-winning-move-2)))
-      (should= 11 (ai/best-computer-move available-winning-move-4x4)))
+         (should= 2 (ai/best-computer-move available-winning-move-2))
+         (should= 11 (ai/best-computer-move available-winning-move-4x4))))
 
     (it "chooses a spot spot when given an empty board"
       (should= 8 (ai/best-computer-move initial-state)))
@@ -142,8 +142,8 @@
     (it "always wins or ties against a random player"
       (dotimes [_ 100]
         (should-not= :computer-lose (test-game (random-first-move 3))))
-      ; (dotimes [_ 10]
-      ;   (should-not= :computer-lose (test-game (random-first-move 4))))))
+      (dotimes [_ 10]
+        (should-not= :computer-lose (test-game (random-first-move 4))))))
 
   (context "#minimax"
     (context "when depth is 0"
