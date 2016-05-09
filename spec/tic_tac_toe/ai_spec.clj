@@ -28,8 +28,40 @@
 (def available-winning-move-4x4
   (game/game-state (board/make-board 4 {"X" #{0 5 6 12} "O" #{3 7 15}})))
 
-(defn random-first-move []
-  (game/progress-game-state (rand-nth (board/initial-board 3)) (game/initial-state 3)))
+(defn- random-first-move [grid-size]
+  (game/progress-game-state (rand-nth (board/initial-board grid-size)) (game/initial-state grid-size)))
+
+(defn- ai-move [game-state]
+  (let [ai-spot (ai/best-computer-move game-state)]
+    (game/progress-game-state ai-spot game-state)))
+
+(defn human-move-simulation [current-game-state]
+  (let [scores (ai/score-for-each-possible-move (game/current-player current-game-state) current-game-state 0)]
+     (let [min-score (apply min-key val scores)
+           max-score (apply max-key val scores)]
+        (let [median-scores (filter #(and (> (val %) (val min-score)) (< (val %) (val max-score))) scores)]
+          (if (empty? median-scores)
+            (key max-score)
+            (key (first median-scores)))))))
+
+(defn- human-move [game-state]
+  (let [human-spot (human-move-simulation game-state)]
+    (game/progress-game-state human-spot game-state)))
+
+(defn test-game [game-state]
+  (let [[player-1 player-2] (:players game-state)]
+    (loop [current-game-state game-state]
+      (if (game/game-over? current-game-state)
+       (cond
+         (game/tie? current-game-state)
+         :tie
+         (game/is-winner? current-game-state player-2)
+         :computer-win
+         (game/is-winner? current-game-state player-2)
+         :computer-lose)
+       (if (= player-2 (game/current-player current-game-state))
+         (recur (ai-move current-game-state))
+         (recur (human-move current-game-state)))))))
 
 (describe "AI"
   (context "#ai/best-computer-move"
@@ -83,17 +115,17 @@
       (let [eleven-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{7 10 15} "O" #{1 12}}))]
         (should= 8 (ai/best-computer-move eleven-moves-state-4x4))))
 
-;    (it "chooses a move when there are twelve moves available"
-;      (let [twelve-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10 15} "O" #{1 12}}))]
-;        (should= 8 (ai/best-computer-move twelve-moves-state-4x4))))
+    (it "chooses a move when there are twelve moves available"
+      (let [twelve-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10 15} "O" #{1 12}}))]
+        (should= 8 (ai/best-computer-move twelve-moves-state-4x4))))
 
-;    (it "chooses a move when there are thirteen moves available"
-;      (let [thirteen-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10 15} "O" #{1}}))]
-;        (should-not-be-nil (ai/best-computer-move thirteen-moves-state-4x4))))
+    (it "chooses a move when there are thirteen moves available"
+      (let [thirteen-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10 15} "O" #{1}}))]
+        (should-not-be-nil (ai/best-computer-move thirteen-moves-state-4x4))))
 
-;    (it "chooses a move when there are fourteen moves available"
-;      (let [fourteen-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10} "O" #{12}}))]
-;        (should-not-be-nil (ai/best-computer-move fourteen-moves-state-4x4))))
+    (it "chooses a move when there are fourteen moves available"
+      (let [fourteen-moves-state-4x4 (game/game-state (board/make-board 4 {"X" #{10} "O" #{12}}))]
+        (should-not-be-nil (ai/best-computer-move fourteen-moves-state-4x4))))
 
     (it "blocks the opponent from winning"
       (should= 8 (ai/best-computer-move x-will-win-state))
@@ -102,10 +134,16 @@
     (it "goes for the winning move when one is available"
       (let [available-winning-move-2 (game/game-state (board/make-board 3 {"X" #{0 1} "O" #{3 8}}))]
          (should= 2 (ai/best-computer-move available-winning-move-2)))
-         (should= 11 (ai/best-computer-move available-winning-move-4x4)))
+      (should= 11 (ai/best-computer-move available-winning-move-4x4)))
 
     (it "chooses a spot spot when given an empty board"
-      (should= 8 (ai/best-computer-move initial-state))))
+      (should= 8 (ai/best-computer-move initial-state)))
+
+    (it "always wins or ties against a random player"
+      (dotimes [_ 100]
+        (should-not= :computer-lose (test-game (random-first-move 3))))
+      ; (dotimes [_ 10]
+      ;   (should-not= :computer-lose (test-game (random-first-move 4))))))
 
   (context "#minimax"
     (context "when depth is 0"
