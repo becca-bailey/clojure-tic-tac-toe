@@ -19,15 +19,15 @@
   [(player/human "X") (player/computer "O")])
 
 (defn set-player-markers [game-state]
-  (let [[player-1 player-2] (:players game-state)]
-    (let [new-player-1
+  (let [[player-1 player-2] (:players game-state)
+        new-player-1
           (merge player-1 {:marker
                             (ui/get-marker-choice player-1)})
           new-player-2
           (merge player-2 {:marker
                             (ui/get-marker-choice player-2 new-player-1)})]
-      (merge game-state
-        {:players [new-player-1 new-player-2]}))))
+    (merge game-state
+      {:players [new-player-1 new-player-2]})))
 
 (defn game-setup []
   (ui/clear-screen)
@@ -58,13 +58,12 @@
 (defn play [original-game-state]
   (loop [game-state original-game-state
          last-move nil]
-    (do
-      (ui/display-board (:board game-state))
-      (display-last-move last-move game-state)
-      (if (game/game-over? game-state)
-        (win-state original-game-state game-state)
-        (let [next-move (move game-state)]
-          (recur (game/progress-game-state next-move game-state) next-move))))))
+    (ui/display-board (:board game-state))
+    (display-last-move last-move game-state)
+    (if (game/game-over? game-state)
+      (win-state original-game-state game-state)
+      (let [next-move (move game-state)]
+        (recur (game/progress-game-state next-move game-state) next-move)))))
 
 (defn -main [& args]
   (game-setup)

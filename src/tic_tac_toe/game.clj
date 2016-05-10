@@ -31,9 +31,9 @@
       player-2)))
 
 (defn update-board [game-state updated-board]
-    (merge game-state
-      {:board updated-board}
-      {:turn-counter (inc (:turn-counter game-state))}))
+  (merge game-state
+    {:board updated-board}
+    {:turn-counter (inc (:turn-counter game-state))}))
 
 (defn progress-game-state [spot current-game-state]
   (let [progressed-board

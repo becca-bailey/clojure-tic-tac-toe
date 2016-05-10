@@ -36,13 +36,13 @@
     (game/progress-game-state ai-spot game-state)))
 
 (defn human-move-simulation [current-game-state]
-  (let [scores (ai/score-for-each-possible-move (game/current-player current-game-state) current-game-state 0)]
-     (let [min-score (apply min-key val scores)
-           max-score (apply max-key val scores)]
-        (let [median-scores (filter #(and (> (val %) (val min-score)) (< (val %) (val max-score))) scores)]
-          (if (empty? median-scores)
-            (key max-score)
-            (key (first median-scores)))))))
+  (let [scores (ai/score-for-each-possible-move (game/current-player current-game-state) current-game-state 0)
+        min-score (apply min-key val scores)
+        max-score (apply max-key val scores)
+        median-scores (filter #(and (> (val %) (val min-score)) (< (val %) (val max-score))) scores)]
+    (if (empty? median-scores)
+      (key max-score)
+      (key (first median-scores)))))
 
 (defn- human-move [game-state]
   (let [human-spot (human-move-simulation game-state)]

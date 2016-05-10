@@ -8,7 +8,8 @@
   (assoc board spot marker))
 
 (defn replace-with-player-marker [players spots current-spot]
-  (let [[player-1 player-2] players [player-1-spots player-2-spots] spots]
+  (let [[player-1 player-2] players 
+        [player-1-spots player-2-spots] spots]
     (cond
       (contains? player-1-spots current-spot)
       player-1
@@ -17,7 +18,7 @@
       :else current-spot)))
 
 (defn make-board [grid-size players-and-spots]
-   (let [players (keys players-and-spots) spots (vals players-and-spots)]
+  (let [players (keys players-and-spots) spots (vals players-and-spots)]
     (into [] (map #(replace-with-player-marker players spots %) (initial-board grid-size)))))
 
 (defn grid-size [board]
@@ -30,7 +31,7 @@
   (range grid-size))
 
 (defn diagonal-start [grid-size]
-   (conj [0] (dec grid-size)))
+  (conj [0] (dec grid-size)))
 
 (defn rows [grid-size]
   (map #(into [] (range % (+ % grid-size))) (row-start grid-size)))

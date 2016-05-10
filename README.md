@@ -18,7 +18,7 @@ cd clojure-tic-tac-toe
 #### To play with a 4x4 board:
 
 `lein run 4x4`
-`
+
 ### Run the specs:
 
 `lein spec`

@@ -13,8 +13,6 @@
       (- depth starting-score)
       :no-winner 0)))
 
-(def memoize-score (memoize score))
-
 (declare score-for-each-possible-move)
 
 (defn return-min-or-max [coll player current-game-state]
@@ -42,12 +40,3 @@
 (defn best-computer-move [current-game-state]
   (let [scores (score-for-each-possible-move (game/current-player current-game-state) current-game-state 0)]
     (key (apply max-key val scores))))
-
-(defn human-move-simulation [current-game-state]
-  (let [scores (score-for-each-possible-move (game/current-player current-game-state) current-game-state 0)]
-     (let [min-score (apply min-key val scores)
-           max-score (apply max-key val scores)]
-        (let [median-scores (filter #(and (> (val %) (val min-score)) (< (val %) (val max-score))) scores)]
-          (if (empty? median-scores)
-            (key max-score)
-            (key (first median-scores)))))))

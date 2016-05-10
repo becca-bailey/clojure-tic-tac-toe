@@ -35,17 +35,17 @@
 
 (defn get-user-input
   ([condition error-message]
-   (loop [user-input (read-line)]
-    (if (condition user-input)
-      user-input
-      (do (print-error error-message)
-        (recur (read-line))))))
+    (loop [user-input (read-line)]
+      (if (condition user-input)
+        user-input
+        (do (print-error error-message)
+          (recur (read-line))))))
   ([condition error-message possible-input]
-   (loop [user-input (read-line)]
-    (if (condition possible-input user-input)
-     user-input
-      (do (print-error error-message)
-        (recur (read-line)))))))
+    (loop [user-input (read-line)]
+      (if (condition possible-input user-input)
+        user-input
+        (do (print-error error-message)
+          (recur (read-line)))))))
 
 (defn get-spot [available-spots]
   (println (str "Where would you like to play? Available spots: " (clojure.string/join " " available-spots)))
